@@ -14,11 +14,11 @@
             <div class="space-y-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">{% translate "Evaluee" %}</label>
-                    <select name="patient_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
+                    <select name="evaluee_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" required>
                         <option value="">{% translate "Select an evaluee" %}</option>
-                        {% for patient in patients %}
-                            <option value="{{ patient.id }}" {% if initial_patient and initial_patient.id == patient.id %}selected{% endif %}>
-                                {{ patient.first_name }} {{ patient.last_name }}
+                        {% for evaluee in evaluees %}
+                            <option value="{{ evaluee.id }}" {% if initial_evaluee and initial_evaluee.id == evaluee.id %}selected{% endif %}>
+                                {{ evaluee.first_name }} {{ evaluee.last_name }}
                             </option>
                         {% endfor %}
                     </select>
@@ -27,10 +27,10 @@
                     <label class="block text-sm font-medium text-gray-700">{% translate "Plan Title" %}</label>
                     <input type="text" name="title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" 
                            placeholder="{% translate 'Enter life care plan title' %}"
-                           value="{% if initial_patient %}{% translate 'Life Care Plan for' %} {{ initial_patient.first_name }} {{ initial_patient.last_name }}{% endif %}">
+                           value="{% if initial_evaluee %}{% translate 'Life Care Plan for' %} {{ initial_evaluee.first_name }} {{ initial_evaluee.last_name }}{% endif %}">
                 </div>
                 <div class="flex justify-end space-x-4">
-                    <a href="{% if initial_patient %}{% url 'dashboard:patient_detail' initial_patient.id %}{% else %}{% url 'dashboard:care_plan_list' %}{% endif %}" class="btn btn-outline">
+                    <a href="{% if initial_evaluee %}{% url 'dashboard:evaluee_detail' initial_evaluee.id %}{% else %}{% url 'dashboard:care_plan_list' %}{% endif %}" class="btn btn-outline">
                         {% translate "Cancel" %}
                     </a>
                     <button type="submit" class="btn btn-primary">

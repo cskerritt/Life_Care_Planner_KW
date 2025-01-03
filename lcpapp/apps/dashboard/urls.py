@@ -6,10 +6,10 @@ app_name = "dashboard"
 urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     # Evaluees
-    path("evaluees/", views.patient_list, name="evaluee_list"),
-    path("evaluees/create/", views.patient_create, name="evaluee_create"),
-    path("evaluees/<int:patient_id>/", views.patient_detail, name="evaluee_detail"),
-    path("evaluees/<int:patient_id>/edit/", views.patient_edit, name="evaluee_edit"),
+    path("evaluees/", views.evaluee_list, name="evaluee_list"),
+    path("evaluees/create/", views.evaluee_create, name="evaluee_create"),
+    path("evaluees/<int:evaluee_id>/", views.evaluee_detail, name="evaluee_detail"),
+    path("evaluees/<int:evaluee_id>/edit/", views.evaluee_edit, name="evaluee_edit"),
     # Life Care Plans
     path("life-care-plans/", views.care_plan_list, name="care_plan_list"),
     path("life-care-plans/create/", views.create_care_plan, name="care_plan_create"),

@@ -7,8 +7,8 @@
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold text-gray-700 mb-2">Total Patients</h3>
-            <p class="text-3xl font-bold text-blue-600">{{ patients.count }}</p>
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Total Evaluees</h3>
+            <p class="text-3xl font-bold text-blue-600">{{ evaluees.count }}</p>
         </div>
         <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-lg font-semibold text-gray-700 mb-2">Task Completion Rate</h3>
@@ -33,7 +33,7 @@
                         <div class="flex items-center justify-between border-b border-gray-100 pb-4 last:border-0 last:pb-0">
                             <div>
                                 <h4 class="font-medium text-gray-800">{{ task.title }}</h4>
-                                <p class="text-sm text-gray-500">{{ task.care_plan.patient.first_name }} {{ task.care_plan.patient.last_name }}</p>
+                                <p class="text-sm text-gray-500">Evaluee: {{ task.care_plan.patient.first_name }} {{ task.care_plan.patient.last_name }}</p>
                             </div>
                             <div class="flex items-center">
                                 <span class="px-3 py-1 text-sm rounded-full 
@@ -76,7 +76,7 @@
                                     </span>
                                 </div>
                                 <p class="text-sm text-gray-500">Due: {{ task.due_date|date:"M d, Y" }}</p>
-                                <p class="text-sm text-gray-500">Patient: {{ task.care_plan.patient.first_name }} {{ task.care_plan.patient.last_name }}</p>
+                                <p class="text-sm text-gray-500">Evaluee: {{ task.care_plan.patient.first_name }} {{ task.care_plan.patient.last_name }}</p>
                             </div>
                         {% endfor %}
                     </div>
@@ -103,7 +103,7 @@
                                     </span>
                                 </div>
                                 <p class="text-sm text-gray-500">Date: {{ record.date_of_record|date:"M d, Y" }}</p>
-                                <p class="text-sm text-gray-500">Patient: {{ record.patient.first_name }} {{ record.patient.last_name }}</p>
+                                <p class="text-sm text-gray-500">Evaluee: {{ record.patient.first_name }} {{ record.patient.last_name }}</p>
                             </div>
                         {% endfor %}
                     </div>
@@ -124,7 +124,7 @@
                         {% for plan in active_care_plans %}
                             <div class="border rounded-lg p-4">
                                 <h4 class="font-medium text-gray-800 mb-2">{{ plan.title }}</h4>
-                                <p class="text-sm text-gray-500 mb-2">Patient: {{ plan.patient.first_name }} {{ plan.patient.last_name }}</p>
+                                <p class="text-sm text-gray-500 mb-2">Evaluee: {{ plan.patient.first_name }} {{ plan.patient.last_name }}</p>
                                 <p class="text-sm text-gray-500 mb-2">Start Date: {{ plan.start_date|date:"M d, Y" }}</p>
                                 {% if plan.end_date %}
                                     <p class="text-sm text-gray-500">End Date: {{ plan.end_date|date:"M d, Y" }}</p>

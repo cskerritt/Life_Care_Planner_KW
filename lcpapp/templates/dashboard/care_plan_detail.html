@@ -1,6 +1,7 @@
 {% extends "web/app/app_base.html" %}
 {% load static %}
 {% load i18n %}
+{% load dashboard_filters %}
 
 {% block app %}
 <div class="container mx-auto px-4 py-8">
@@ -24,15 +25,15 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <p class="text-sm text-gray-500">{% translate "Name" %}</p>
-                <p class="text-base text-gray-900">{{ care_plan.patient.first_name }} {{ care_plan.patient.last_name }}</p>
+                <p class="text-base text-gray-900">{{ care_plan.evaluee.first_name }} {{ care_plan.evaluee.last_name }}</p>
             </div>
             <div>
                 <p class="text-sm text-gray-500">{% translate "Medical Record Number" %}</p>
-                <p class="text-base text-gray-900">{{ care_plan.patient.medical_record_number }}</p>
+                <p class="text-base text-gray-900">{{ care_plan.evaluee.medical_record_number }}</p>
             </div>
             <div class="md:col-span-2">
                 <p class="text-sm text-gray-500">{% translate "Primary Diagnosis" %}</p>
-                <p class="text-base text-gray-900">{{ care_plan.patient.primary_diagnosis }}</p>
+                <p class="text-base text-gray-900">{{ care_plan.evaluee.primary_diagnosis }}</p>
             </div>
         </div>
     </div>
@@ -47,7 +48,7 @@
                     {% if care_plan.status == 'active' %}bg-green-100 text-green-800
                     {% elif care_plan.status == 'pending' %}bg-yellow-100 text-yellow-800
                     {% else %}bg-red-100 text-red-800{% endif %}">
-                    {{ care_plan.status|title }}
+                    {{ care_plan.get_status_display }}
                 </span>
             </div>
             <div>
@@ -63,64 +64,70 @@
         </div>
     </div>
 
-    <!-- Medical Requirements -->
+    <!-- Care Plan Items by Category -->
+    {% for category, items in items_by_category.items %}
     <div class="bg-white rounded-lg shadow p-6 mb-8">
         <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-gray-700">{% translate "Medical Requirements" %}</h2>
+            <h2 class="text-lg font-semibold text-gray-700">{{ category }}</h2>
             <a href="{% url 'dashboard:care_plan_edit' care_plan.id %}" class="text-blue-600 hover:text-blue-900">
                 <i class="fa fa-edit"></i>
             </a>
         </div>
-        {% if care_plan.medical_requirements.all %}
+        {% if items %}
         <div class="space-y-4">
-            {% for req in care_plan.medical_requirements.all %}
+            {% for item in items %}
             <div class="border-l-4 border-blue-500 pl-4">
-                <h3 class="text-base font-medium text-gray-900">{{ req.title }}</h3>
-                <p class="text-sm text-gray-500">{{ req.get_category_display }}</p>
-                <p class="text-sm text-gray-700 mt-1">{{ req.description }}</p>
-                <p class="text-sm text-gray-500 mt-1">{% translate "Frequency:" %} {{ req.frequency }}</p>
+                <div class="flex justify-between items-start">
+                    <div class="w-full">
+                        <h3 class="text-base font-medium text-gray-900">{{ item.title }}</h3>
+                        <p class="text-sm text-gray-700 mt-1">{{ item.description }}</p>
+                        <div class="mt-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-500">{% translate "Frequency" %}</p>
+                                <p class="text-sm text-gray-900">{{ item.frequency }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">{% translate "Cost" %}</p>
+                                <p class="text-sm text-gray-900">${{ item.cost|floatformat:2 }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">{% translate "Status" %}</p>
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    {% if item.status == 'completed' %}bg-green-100 text-green-800
+                                    {% elif item.status == 'in_progress' %}bg-yellow-100 text-yellow-800
+                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    {{ item.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-500">{% translate "Start Date" %}</p>
+                                <p class="text-sm text-gray-900">{{ item.start_date|date:"M d, Y" }}</p>
+                            </div>
+                            {% if item.end_date %}
+                            <div>
+                                <p class="text-sm text-gray-500">{% translate "End Date" %}</p>
+                                <p class="text-sm text-gray-900">{{ item.end_date|date:"M d, Y" }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
             </div>
             {% endfor %}
         </div>
         {% else %}
-        <p class="text-gray-500">{% translate "No medical requirements defined" %}</p>
+        <p class="text-gray-500">{% translate "No items defined" %}</p>
         {% endif %}
     </div>
-
-    <!-- Treatment Timeline -->
-    <div class="bg-white rounded-lg shadow p-6 mb-8">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-gray-700">{% translate "Treatment Timeline" %}</h2>
-            <a href="{% url 'dashboard:care_plan_edit' care_plan.id %}" class="text-blue-600 hover:text-blue-900">
-                <i class="fa fa-edit"></i>
-            </a>
-        </div>
-        {% if care_plan.treatments.all %}
-        <div class="space-y-4">
-            {% for treatment in care_plan.treatments.all %}
-            <div class="border-l-4 border-green-500 pl-4">
-                <h3 class="text-base font-medium text-gray-900">{{ treatment.title }}</h3>
-                <p class="text-sm text-gray-500">{{ treatment.date|date:"M d, Y" }}</p>
-                <p class="text-sm text-gray-700 mt-1">{{ treatment.description }}</p>
-                <span class="mt-1 px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                    {% if treatment.status == 'completed' %}bg-green-100 text-green-800
-                    {% elif treatment.status == 'in_progress' %}bg-yellow-100 text-yellow-800
-                    {% else %}bg-gray-100 text-gray-800{% endif %}">
-                    {{ treatment.get_status_display }}
-                </span>
-            </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <p class="text-gray-500">{% translate "No treatments defined" %}</p>
-        {% endif %}
-    </div>
+    {% endfor %}
 
     <!-- Medical Costs -->
     <div class="bg-white rounded-lg shadow p-6 mb-8">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold text-gray-700">{% translate "Medical Costs" %}</h2>
-            <a href="{% url 'dashboard:care_plan_medical_costs' care_plan.id %}" class="text-blue-600 hover:text-blue-900">
+            <a href="{% url 'dashboard:medical_costs' care_plan.id %}" class="text-blue-600 hover:text-blue-900">
                 <i class="fa fa-calculator"></i>
             </a>
         </div>
@@ -140,7 +147,7 @@
     <div class="bg-white rounded-lg shadow p-6">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold text-gray-700">{% translate "Life Expectancy" %}</h2>
-            <a href="{% url 'dashboard:care_plan_life_expectancy' care_plan.id %}" class="text-blue-600 hover:text-blue-900">
+            <a href="{% url 'dashboard:life_expectancy' care_plan.id %}" class="text-blue-600 hover:text-blue-900">
                 <i class="fa fa-heartbeat"></i>
             </a>
         </div>

@@ -12,12 +12,12 @@ from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.text import slugify
+from django.db import models
 from datetime import datetime
 
 
 from apps.api.models import (
-    Patient, Task, CarePlan, MedicalRecord,
-    MedicalRequirement, Treatment
+    Evaluee, Task, CarePlan, CarePlanItem
 )
 
 
@@ -26,19 +26,19 @@ def create_care_plan(request):
     """
     Create a new life care plan
     """
-    # Check for patient_id in GET parameters (from evaluee list)
-    initial_patient_id = request.GET.get('patient_id')
-    initial_patient = None
-    if initial_patient_id:
-        initial_patient = get_object_or_404(Patient, id=initial_patient_id, user=request.user)
+    # Check for evaluee_id in GET parameters (from evaluee list)
+    initial_evaluee_id = request.GET.get('evaluee_id')
+    initial_evaluee = None
+    if initial_evaluee_id:
+        initial_evaluee = get_object_or_404(Evaluee, id=initial_evaluee_id, user=request.user)
 
     if request.method == "POST":
-        patient_id = request.POST.get('patient_id')
+        evaluee_id = request.POST.get('evaluee_id')
         title = request.POST.get('title', 'New Life Care Plan')
         
-        patient = get_object_or_404(Patient, id=patient_id, user=request.user)
+        evaluee = get_object_or_404(Evaluee, id=evaluee_id, user=request.user)
         care_plan = CarePlan.objects.create(
-            patient=patient,
+            evaluee=evaluee,
             title=title,
             description="",
             start_date=timezone.now().date(),
@@ -47,39 +47,39 @@ def create_care_plan(request):
         return redirect('dashboard:care_plan_edit', plan_id=care_plan.id)
     
     # Get list of evaluees for selection
-    patients = Patient.objects.filter(user=request.user)
+    evaluees = Evaluee.objects.filter(user=request.user)
     return TemplateResponse(
         request,
         "dashboard/care_plan_create.html",
         context={
             "active_tab": "life-care-plans",
-            "patients": patients,
-            "initial_patient": initial_patient,
+            "evaluees": evaluees,
+            "initial_evaluee": initial_evaluee,
         },
     )
 
 @login_required
-def patient_list(request):
+def evaluee_list(request):
     """
     Display list of all evaluees
     """
-    patients = Patient.objects.filter(user=request.user).order_by('-created_at')
+    evaluees = Evaluee.objects.filter(user=request.user).order_by('-created_at')
     return TemplateResponse(
         request,
         "dashboard/evaluee_list.html",
         context={
-            "active_tab": "patients",
-            "patients": patients,
+            "active_tab": "evaluees",
+            "evaluees": evaluees,
         },
     )
 
 @login_required
-def patient_create(request):
+def evaluee_create(request):
     """
     Create a new evaluee
     """
     if request.method == "POST":
-        patient = Patient.objects.create(
+        evaluee = Evaluee.objects.create(
             user=request.user,
             first_name=request.POST.get('first_name'),
             last_name=request.POST.get('last_name'),
@@ -94,51 +94,51 @@ def patient_create(request):
         request,
         "dashboard/evaluee_create.html",
         context={
-            "active_tab": "patients",
+            "active_tab": "evaluees",
         },
     )
 
 @login_required
-def patient_detail(request, patient_id):
+def evaluee_detail(request, evaluee_id):
     """
     Display detailed view of a specific evaluee
     """
-    patient = get_object_or_404(Patient, id=patient_id, user=request.user)
-    care_plans = CarePlan.objects.filter(patient=patient).order_by('-created_at')
+    evaluee = get_object_or_404(Evaluee, id=evaluee_id, user=request.user)
+    care_plans = CarePlan.objects.filter(evaluee=evaluee).order_by('-created_at')
     
     return TemplateResponse(
         request,
         "dashboard/evaluee_detail.html",
         context={
-            "active_tab": "patients",
-            "patient": patient,
+            "active_tab": "evaluees",
+            "evaluee": evaluee,
             "care_plans": care_plans,
         },
     )
 
 @login_required
-def patient_edit(request, patient_id):
+def evaluee_edit(request, evaluee_id):
     """
     Edit a specific evaluee
     """
-    patient = get_object_or_404(Patient, id=patient_id, user=request.user)
+    evaluee = get_object_or_404(Evaluee, id=evaluee_id, user=request.user)
     
     if request.method == "POST":
-        patient.first_name = request.POST.get('first_name')
-        patient.last_name = request.POST.get('last_name')
-        patient.date_of_birth = request.POST.get('date_of_birth')
-        patient.medical_record_number = request.POST.get('medical_record_number')
-        patient.primary_diagnosis = request.POST.get('primary_diagnosis')
-        patient.notes = request.POST.get('notes', '')
-        patient.save()
-        return redirect('dashboard:evaluee_detail', patient_id=patient_id)
+        evaluee.first_name = request.POST.get('first_name')
+        evaluee.last_name = request.POST.get('last_name')
+        evaluee.date_of_birth = request.POST.get('date_of_birth')
+        evaluee.medical_record_number = request.POST.get('medical_record_number')
+        evaluee.primary_diagnosis = request.POST.get('primary_diagnosis')
+        evaluee.notes = request.POST.get('notes', '')
+        evaluee.save()
+        return redirect('dashboard:evaluee_detail', evaluee_id=evaluee_id)
     
     return TemplateResponse(
         request,
         "dashboard/evaluee_edit.html",
         context={
-            "active_tab": "patients",
-            "patient": patient,
+            "active_tab": "evaluees",
+            "evaluee": evaluee,
         },
     )
 
@@ -148,45 +148,45 @@ def dashboard(request):
     Main dashboard view showing overview of evaluees and life care plans
     """
     # Get current user's evaluees
-    patients = Patient.objects.filter(user=request.user)
+    evaluees = Evaluee.objects.filter(user=request.user)
     
     # Get upcoming tasks across all life care plans
     upcoming_tasks = Task.objects.filter(
-        care_plan__patient__user=request.user,
+        care_plan__evaluee__user=request.user,
         status__in=['pending', 'in_progress'],
         due_date__gte=timezone.now()
     ).order_by('due_date')[:5]
     
     # Get active life care plans
     active_care_plans = CarePlan.objects.filter(
-        patient__user=request.user,
+        evaluee__user=request.user,
         status='active'
     ).order_by('-updated_at')[:5]
     
-    # Get recent medical records
-    recent_records = MedicalRecord.objects.filter(
-        patient__user=request.user
-    ).order_by('-date_of_record')[:5]
+    # Get recent items
+    recent_items = CarePlanItem.objects.filter(
+        care_plan__evaluee__user=request.user
+    ).order_by('-created_at')[:5]
     
     # Get tasks due today
     today = timezone.now().date()
     tasks_due_today = Task.objects.filter(
-        care_plan__patient__user=request.user,
+        care_plan__evaluee__user=request.user,
         status__in=['pending', 'in_progress'],
         due_date__date=today
     ).order_by('due_date')
     
     # Get overdue tasks
     overdue_tasks = Task.objects.filter(
-        care_plan__patient__user=request.user,
+        care_plan__evaluee__user=request.user,
         status__in=['pending', 'in_progress'],
         due_date__lt=timezone.now()
     ).order_by('due_date')
     
     # Calculate task statistics
-    total_tasks = Task.objects.filter(care_plan__patient__user=request.user).count()
+    total_tasks = Task.objects.filter(care_plan__evaluee__user=request.user).count()
     completed_tasks = Task.objects.filter(
-        care_plan__patient__user=request.user,
+        care_plan__evaluee__user=request.user,
         status='completed'
     ).count()
     completion_rate = (completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
@@ -196,10 +196,10 @@ def dashboard(request):
         "dashboard/user_dashboard.html",
         context={
             "active_tab": "dashboard",
-            "patients": patients,
+            "evaluees": evaluees,
             "upcoming_tasks": upcoming_tasks,
             "active_care_plans": active_care_plans,
-            "recent_records": recent_records,
+            "recent_items": recent_items,
             "tasks_due_today": tasks_due_today,
             "overdue_tasks": overdue_tasks,
             "total_tasks": total_tasks,
@@ -214,7 +214,7 @@ def export_care_plan(request, plan_id):
     """
     Export life care plan details to Word document
     """
-    care_plan = get_object_or_404(CarePlan, id=plan_id, patient__user=request.user)
+    care_plan = get_object_or_404(CarePlan, id=plan_id, evaluee__user=request.user)
     
     # Create Word document
     doc = Document()
@@ -222,9 +222,9 @@ def export_care_plan(request, plan_id):
     
     # Evaluee Information
     doc.add_heading('Evaluee Information', level=1)
-    doc.add_paragraph(f'Name: {care_plan.patient.first_name} {care_plan.patient.last_name}')
-    doc.add_paragraph(f'Medical Record Number: {care_plan.patient.medical_record_number}')
-    doc.add_paragraph(f'Primary Diagnosis: {care_plan.patient.primary_diagnosis}')
+    doc.add_paragraph(f'Name: {care_plan.evaluee.first_name} {care_plan.evaluee.last_name}')
+    doc.add_paragraph(f'Medical Record Number: {care_plan.evaluee.medical_record_number}')
+    doc.add_paragraph(f'Primary Diagnosis: {care_plan.evaluee.primary_diagnosis}')
     
     # Plan Details
     doc.add_heading('Plan Details', level=1)
@@ -233,19 +233,26 @@ def export_care_plan(request, plan_id):
     if care_plan.end_date:
         doc.add_paragraph(f'End Date: {care_plan.end_date}')
     
-    # Medical Requirements
-    doc.add_heading('Medical Requirements', level=1)
-    for req in care_plan.medical_requirements.all():
-        doc.add_paragraph(f'• {req.title} ({req.get_category_display()})')
-        doc.add_paragraph(f'  Description: {req.description}')
-        doc.add_paragraph(f'  Frequency: {req.frequency}')
+    # Group items by category
+    items_by_category = {}
+    for item in care_plan.items.all():
+        category = item.get_category_display()
+        if category not in items_by_category:
+            items_by_category[category] = []
+        items_by_category[category].append(item)
     
-    # Treatment Timeline
-    doc.add_heading('Treatment Timeline', level=1)
-    for treatment in care_plan.treatments.all():
-        doc.add_paragraph(f'• {treatment.title} - {treatment.get_status_display()}')
-        doc.add_paragraph(f'  Date: {treatment.date}')
-        doc.add_paragraph(f'  Description: {treatment.description}')
+    # Add each category to the document
+    for category, items in items_by_category.items():
+        doc.add_heading(category, level=1)
+        for item in items:
+            doc.add_paragraph(f'• {item.title}')
+            doc.add_paragraph(f'  Description: {item.description}')
+            doc.add_paragraph(f'  Frequency: {item.frequency}')
+            doc.add_paragraph(f'  Cost: ${item.cost:,.2f}')
+            if item.start_date:
+                doc.add_paragraph(f'  Start Date: {item.start_date}')
+            if item.end_date:
+                doc.add_paragraph(f'  End Date: {item.end_date}')
     
     # Medical Costs
     doc.add_heading('Medical Costs Summary', level=1)
@@ -270,8 +277,8 @@ def care_plan_list(request):
     Display list of all life care plans
     """
     care_plans = CarePlan.objects.filter(
-        patient__user=request.user
-    ).select_related('patient').order_by('-created_at')
+        evaluee__user=request.user
+    ).select_related('evaluee').order_by('-created_at')
     
     return TemplateResponse(
         request,
@@ -287,7 +294,15 @@ def care_plan_detail(request, plan_id):
     """
     Display detailed view of a specific life care plan
     """
-    care_plan = get_object_or_404(CarePlan, id=plan_id, patient__user=request.user)
+    care_plan = get_object_or_404(CarePlan, id=plan_id, evaluee__user=request.user)
+    
+    # Group items by category
+    items_by_category = {}
+    for item in care_plan.items.all():
+        category = item.get_category_display()
+        if category not in items_by_category:
+            items_by_category[category] = []
+        items_by_category[category].append(item)
     
     return TemplateResponse(
         request,
@@ -295,6 +310,7 @@ def care_plan_detail(request, plan_id):
         context={
             "active_tab": "life-care-plans",
             "care_plan": care_plan,
+            "items_by_category": items_by_category,
         },
     )
 
@@ -303,7 +319,7 @@ def care_plan_edit(request, plan_id):
     """
     Edit a specific life care plan
     """
-    care_plan = get_object_or_404(CarePlan, id=plan_id, patient__user=request.user)
+    care_plan = get_object_or_404(CarePlan, id=plan_id, evaluee__user=request.user)
     
     if request.method == "POST":
         # Update basic life care plan info
@@ -312,42 +328,52 @@ def care_plan_edit(request, plan_id):
         care_plan.start_date = request.POST.get('start_date')
         care_plan.end_date = request.POST.get('end_date') or None
         
-        # Handle medical requirements
-        care_plan.medical_requirements.all().delete()  # Remove existing requirements
-        requirement_titles = request.POST.getlist('requirement_title[]')
-        requirement_categories = request.POST.getlist('requirement_category[]')
-        requirement_descriptions = request.POST.getlist('requirement_description[]')
-        requirement_frequencies = request.POST.getlist('requirement_frequency[]')
+        # Handle items
+        care_plan.items.all().delete()  # Remove existing items
         
-        for i in range(len(requirement_titles)):
-            if requirement_titles[i]:  # Only create if title exists
-                MedicalRequirement.objects.create(
+        # Get all the arrays from POST
+        item_titles = request.POST.getlist('item_title[]')
+        item_categories = request.POST.getlist('item_category[]')
+        item_descriptions = request.POST.getlist('item_description[]')
+        item_frequencies = request.POST.getlist('item_frequency[]')
+        item_costs = request.POST.getlist('item_cost[]')
+        item_start_dates = request.POST.getlist('item_start_date[]')
+        item_end_dates = request.POST.getlist('item_end_date[]')
+        item_statuses = request.POST.getlist('item_status[]')
+        
+        # Create new items
+        total_costs = 0
+        for i in range(len(item_titles)):
+            if item_titles[i]:  # Only create if title exists
+                cost = float(item_costs[i] or 0)
+                total_costs += cost
+                
+                CarePlanItem.objects.create(
                     care_plan=care_plan,
-                    title=requirement_titles[i],
-                    category=requirement_categories[i],
-                    description=requirement_descriptions[i],
-                    frequency=requirement_frequencies[i]
+                    title=item_titles[i],
+                    category=item_categories[i],
+                    description=item_descriptions[i],
+                    frequency=item_frequencies[i],
+                    cost=cost,
+                    start_date=item_start_dates[i],
+                    end_date=item_end_dates[i] or None,
+                    status=item_statuses[i]
                 )
         
-        # Handle treatments
-        care_plan.treatments.all().delete()  # Remove existing treatments
-        treatment_titles = request.POST.getlist('treatment_title[]')
-        treatment_statuses = request.POST.getlist('treatment_status[]')
-        treatment_descriptions = request.POST.getlist('treatment_description[]')
-        treatment_dates = request.POST.getlist('treatment_date[]')
-        
-        for i in range(len(treatment_titles)):
-            if treatment_titles[i]:  # Only create if title exists
-                Treatment.objects.create(
-                    care_plan=care_plan,
-                    title=treatment_titles[i],
-                    status=treatment_statuses[i],
-                    description=treatment_descriptions[i],
-                    date=treatment_dates[i]
-                )
+        # Update care plan costs
+        care_plan.total_medical_costs = total_costs
+        care_plan.monthly_cost_average = total_costs / 12  # Simple average, could be more sophisticated
         
         care_plan.save()
         return redirect('dashboard:care_plan_detail', plan_id=plan_id)
+    
+    # Group items by category for display
+    items_by_category = {}
+    for item in care_plan.items.all():
+        category = item.get_category_display()
+        if category not in items_by_category:
+            items_by_category[category] = []
+        items_by_category[category].append(item)
     
     return TemplateResponse(
         request,
@@ -355,6 +381,8 @@ def care_plan_edit(request, plan_id):
         context={
             "active_tab": "life-care-plans",
             "care_plan": care_plan,
+            "items_by_category": items_by_category,
+            "categories": CarePlanItem.CATEGORY_CHOICES,
         },
     )
 
@@ -365,24 +393,15 @@ def medical_costs(request, plan_id=None):
     """
     care_plan = None
     if plan_id:
-        care_plan = get_object_or_404(CarePlan, id=plan_id, patient__user=request.user)
+        care_plan = get_object_or_404(CarePlan, id=plan_id, evaluee__user=request.user)
     
     if request.method == "POST" and care_plan:
-        # Calculate and save costs
-        emergency_cost = float(request.POST.get('emergency_cost', 0))
-        hospital_cost = float(request.POST.get('hospital_cost', 0))
-        medication_cost = float(request.POST.get('medication_cost', 0))
-        therapy_cost = float(request.POST.get('therapy_cost', 0))
-        equipment_cost = float(request.POST.get('equipment_cost', 0))
-        supplies_cost = float(request.POST.get('supplies_cost', 0))
-        
-        # Calculate totals
-        one_time_costs = emergency_cost + hospital_cost + equipment_cost
-        monthly_costs = medication_cost + (therapy_cost * 4) + supplies_cost
-        annual_costs = monthly_costs * 12
+        # Calculate total costs from all items
+        total_costs = care_plan.items.aggregate(models.Sum('cost'))['cost__sum'] or 0
+        monthly_costs = total_costs / 12  # Simple average, could be more sophisticated
         
         # Update care plan
-        care_plan.total_medical_costs = one_time_costs + annual_costs
+        care_plan.total_medical_costs = total_costs
         care_plan.monthly_cost_average = monthly_costs
         care_plan.save()
         
@@ -404,7 +423,7 @@ def life_expectancy(request, plan_id=None):
     """
     care_plan = None
     if plan_id:
-        care_plan = get_object_or_404(CarePlan, id=plan_id, patient__user=request.user)
+        care_plan = get_object_or_404(CarePlan, id=plan_id, evaluee__user=request.user)
     
     if request.method == "POST" and care_plan:
         # Calculate life expectancy
@@ -446,7 +465,7 @@ def life_expectancy(request, plan_id=None):
         care_plan.life_expectancy = round(estimate)
         care_plan.save()
         
-        return redirect('dashboard:life_care_plan_detail', plan_id=plan_id)
+        return redirect('dashboard:care_plan_detail', plan_id=plan_id)
     
     return TemplateResponse(
         request,

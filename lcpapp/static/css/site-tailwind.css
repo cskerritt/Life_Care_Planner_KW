@@ -7746,6 +7746,10 @@ input:is([data-theme="dark"] *)::placeholder {
   overflow: hidden;
 }
 
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
 .whitespace-nowrap {
   white-space: nowrap;
 }
