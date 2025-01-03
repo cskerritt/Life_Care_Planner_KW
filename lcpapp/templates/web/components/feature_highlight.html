@@ -1,14 +1,19 @@
-<section>
-  <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6 text-black">
+{% load i18n %}
+{% load static %}
+<section class="relative overflow-hidden">
+  <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
     <div class="mx-auto text-center max-w-screen-md mb-8 lg:mb-16">
-      <h2 class="text-base font-semibold leading-7 text-primary">Powerful Built-In Features</h2>
+      <h2 class="text-base font-semibold leading-7 text-primary">{% translate "Comprehensive Life Care Planning Tools" %}</h2>
       <h2 class="mt-2 mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-gray-100">
-        Headlines that catch your attention
+        {% translate "Streamline Your Life Care Planning Process" %}
       </h2>
+      <p class="text-lg text-gray-600 dark:text-gray-300">
+        {% translate "Our suite of tools helps you create detailed, accurate life care plans with ease. Save time and improve accuracy with our specialized features." %}
+      </p>
     </div>
-    <div class="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
-      <div class="grid grid-cols-6 lg:grid-cols-1">
-        <div class="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-primary/20 lg:h-12 lg:w-12">
+    <div class="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0 relative">
+      <div class="group hover:bg-base-200 dark:hover:bg-gray-800 p-6 rounded-xl transition-all duration-300">
+        <div class="flex justify-center items-center mb-4 w-12 h-12 rounded-xl bg-primary/20 group-hover:bg-primary/30 transition-colors duration-300">
           <svg class="h-5 w-5 lg:w-6 lg:h-6 flex-none text-primary" xmlns="http://www.w3.org/2000/svg"
                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                stroke-linejoin="round">
@@ -21,18 +26,27 @@
             <path d="M15 7l1 -4"></path>
           </svg>
         </div>
-        <div class="col-span-5 lg:col-span-0">
-          <h3 class="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100">Headline 1</h3>
-          <p class="text-gray-500 dark:text-gray-400">Short explanation of headline 1</p>
-          <p class="mt-6">
-            <a href="#section1" class="text-sm font-semibold leading-6 text-primary">
-              Learn more<span aria-hidden="true">→</span>
-            </a>
-          </p>
+        <div>
+          <h3 class="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100">{% translate "Dynamic Table Creation" %}</h3>
+          <p class="text-gray-600 dark:text-gray-400">{% translate "Create detailed life care plan tables with customizable categories, costs, and timelines. Our intuitive interface makes it easy to organize and adjust care requirements." %}</p>
+          <ul class="mt-4 space-y-2 text-gray-500 dark:text-gray-400">
+            <li class="flex items-center">
+              <svg class="w-4 h-4 mr-2 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              {% translate "Customizable Templates" %}
+            </li>
+            <li class="flex items-center">
+              <svg class="w-4 h-4 mr-2 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              {% translate "Drag & Drop Interface" %}
+            </li>
+          </ul>
         </div>
       </div>
-      <div class="grid grid-cols-6 lg:grid-cols-1">
-        <div class="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-primary/20 lg:h-12 lg:w-12">
+      <div class="group hover:bg-base-200 dark:hover:bg-gray-800 p-6 rounded-xl transition-all duration-300">
+        <div class="flex justify-center items-center mb-4 w-12 h-12 rounded-xl bg-primary/20 group-hover:bg-primary/30 transition-colors duration-300">
           <svg class="h-5 w-5 lg:w-6 lg:h-6 flex-none text-primary" viewBox="0 0 20 20" fill="currentColor"
                aria-hidden="true">
             <path fill-rule="evenodd"
@@ -42,32 +56,60 @@
               d="M1 14a1 1 0 011-1h4a1 1 0 01.894.553l.448.894a1 1 0 00.894.553h3.438a1 1 0 00.86-.49l.606-1.02A1 1 0 0114 13h4a1 1 0 011 1v2a2 2 0 01-2 2H3a2 2 0 01-2-2v-2z"/>
           </svg>
         </div>
-        <div class="col-span-5 lg:col-span-0">
-          <h3 class="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100">Headline 2</h3>
-          <p class="text-gray-500 dark:text-gray-400">Short explanation of headline 2</p>
-          <p class="mt-6">
-            <a href="#section2" class="text-sm font-semibold leading-6 text-primary">Learn more
-              <span aria-hidden="true">→</span>
-            </a>
-          </p>
+        <div>
+          <h3 class="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100">{% translate "Cost Analysis & Projections" %}</h3>
+          <p class="text-gray-600 dark:text-gray-400">{% translate "Calculate and project lifetime care costs with our advanced estimation tools. Account for inflation, regional cost variations, and different care scenarios." %}</p>
+          <ul class="mt-4 space-y-2 text-gray-500 dark:text-gray-400">
+            <li class="flex items-center">
+              <svg class="w-4 h-4 mr-2 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              {% translate "Inflation Adjustments" %}
+            </li>
+            <li class="flex items-center">
+              <svg class="w-4 h-4 mr-2 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              {% translate "Regional Cost Data" %}
+            </li>
+          </ul>
         </div>
-
       </div>
-      <div class="grid grid-cols-6 lg:grid-cols-1">
-        <div class="flex justify-center items-center w-10 h-10 rounded-full bg-primary/20 lg:h-12 lg:w-12">
-          <svg class="h-5 w-5 lg:w-6 lg:h-6 flex-none text-primary" viewBox="0 0 20 20" fill="currentColor"
-               aria-hidden="true">
-            <path
-              d="M3.505 2.365A41.369 41.369 0 019 2c1.863 0 3.697.124 5.495.365 1.247.167 2.18 1.108 2.435 2.268a4.45 4.45 0 00-.577-.069 43.141 43.141 0 00-4.706 0C9.229 4.696 7.5 6.727 7.5 8.998v2.24c0 1.413.67 2.735 1.76 3.562l-2.98 2.98A.75.75 0 015 17.25v-3.443c-.501-.048-1-.106-1.495-.172C2.033 13.438 1 12.162 1 10.72V5.28c0-1.441 1.033-2.717 2.505-2.914z"/>
-            <path
-              d="M14 6c-.762 0-1.52.02-2.271.062C10.157 6.148 9 7.472 9 8.998v2.24c0 1.519 1.147 2.839 2.71 2.935.214.013.428.024.642.034.2.009.385.09.518.224l2.35 2.35a.75.75 0 001.28-.531v-2.07c1.453-.195 2.5-1.463 2.5-2.915V8.998c0-1.526-1.157-2.85-2.729-2.936A41.645 41.645 0 0014 6z"/>
+      <div class="group hover:bg-base-200 dark:hover:bg-gray-800 p-6 rounded-xl transition-all duration-300">
+        <div class="flex justify-center items-center mb-4 w-12 h-12 rounded-xl bg-primary/20 group-hover:bg-primary/30 transition-colors duration-300">
+          <svg class="h-5 w-5 lg:w-6 lg:h-6 flex-none text-primary" xmlns="http://www.w3.org/2000/svg"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <line x1="10" y1="9" x2="8" y2="9"></line>
           </svg>
         </div>
-        <div class="col-span-5 lg:col-span-0">
-          <h3 class="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100">Headline 3</h3>
-          <p class="text-gray-500 dark:text-gray-400">Short explanation of headline 3</p>
+        <div>
+          <h3 class="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100">{% translate "Professional Reports" %}</h3>
+          <p class="text-gray-600 dark:text-gray-400">{% translate "Generate comprehensive, professional-grade life care plan reports. Export to multiple formats and customize layouts to meet your specific needs." %}</p>
+          <ul class="mt-4 space-y-2 text-gray-500 dark:text-gray-400">
+            <li class="flex items-center">
+              <svg class="w-4 h-4 mr-2 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              {% translate "Multiple Export Formats" %}
+            </li>
+            <li class="flex items-center">
+              <svg class="w-4 h-4 mr-2 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+              {% translate "Custom Branding" %}
+            </li>
+          </ul>
         </div>
       </div>
     </div>
+  </div>
+  <!-- Decorative background elements -->
+  <div class="absolute -z-10 left-1/2 top-0 -translate-x-1/2 blur-3xl opacity-20">
+    <div class="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-[#1d4ed8] to-[#0ea5e9]"></div>
   </div>
 </section>

@@ -1,0 +1,161 @@
+{% extends "web/app/app_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block app %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">{{ care_plan.title }}</h1>
+        <div class="space-x-4">
+            <a href="{% url 'dashboard:care_plan_edit' care_plan.id %}" class="btn btn-outline">
+                <i class="fa fa-edit mr-2"></i>
+                {% translate "Edit Plan" %}
+            </a>
+            <a href="{% url 'dashboard:export_care_plan' care_plan.id %}" class="btn btn-primary">
+                <i class="fa fa-download mr-2"></i>
+                {% translate "Export to Word" %}
+            </a>
+        </div>
+    </div>
+
+    <!-- Evaluee Information -->
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">{% translate "Evaluee Information" %}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <p class="text-sm text-gray-500">{% translate "Name" %}</p>
+                <p class="text-base text-gray-900">{{ care_plan.patient.first_name }} {{ care_plan.patient.last_name }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">{% translate "Medical Record Number" %}</p>
+                <p class="text-base text-gray-900">{{ care_plan.patient.medical_record_number }}</p>
+            </div>
+            <div class="md:col-span-2">
+                <p class="text-sm text-gray-500">{% translate "Primary Diagnosis" %}</p>
+                <p class="text-base text-gray-900">{{ care_plan.patient.primary_diagnosis }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Plan Details -->
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">{% translate "Life Care Plan Details" %}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <p class="text-sm text-gray-500">{% translate "Status" %}</p>
+                <span class="mt-1 px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    {% if care_plan.status == 'active' %}bg-green-100 text-green-800
+                    {% elif care_plan.status == 'pending' %}bg-yellow-100 text-yellow-800
+                    {% else %}bg-red-100 text-red-800{% endif %}">
+                    {{ care_plan.status|title }}
+                </span>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">{% translate "Start Date" %}</p>
+                <p class="text-base text-gray-900">{{ care_plan.start_date|date:"M d, Y" }}</p>
+            </div>
+            {% if care_plan.end_date %}
+            <div>
+                <p class="text-sm text-gray-500">{% translate "End Date" %}</p>
+                <p class="text-base text-gray-900">{{ care_plan.end_date|date:"M d, Y" }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Medical Requirements -->
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-700">{% translate "Medical Requirements" %}</h2>
+            <a href="{% url 'dashboard:care_plan_edit' care_plan.id %}" class="text-blue-600 hover:text-blue-900">
+                <i class="fa fa-edit"></i>
+            </a>
+        </div>
+        {% if care_plan.medical_requirements.all %}
+        <div class="space-y-4">
+            {% for req in care_plan.medical_requirements.all %}
+            <div class="border-l-4 border-blue-500 pl-4">
+                <h3 class="text-base font-medium text-gray-900">{{ req.title }}</h3>
+                <p class="text-sm text-gray-500">{{ req.get_category_display }}</p>
+                <p class="text-sm text-gray-700 mt-1">{{ req.description }}</p>
+                <p class="text-sm text-gray-500 mt-1">{% translate "Frequency:" %} {{ req.frequency }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-500">{% translate "No medical requirements defined" %}</p>
+        {% endif %}
+    </div>
+
+    <!-- Treatment Timeline -->
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-700">{% translate "Treatment Timeline" %}</h2>
+            <a href="{% url 'dashboard:care_plan_edit' care_plan.id %}" class="text-blue-600 hover:text-blue-900">
+                <i class="fa fa-edit"></i>
+            </a>
+        </div>
+        {% if care_plan.treatments.all %}
+        <div class="space-y-4">
+            {% for treatment in care_plan.treatments.all %}
+            <div class="border-l-4 border-green-500 pl-4">
+                <h3 class="text-base font-medium text-gray-900">{{ treatment.title }}</h3>
+                <p class="text-sm text-gray-500">{{ treatment.date|date:"M d, Y" }}</p>
+                <p class="text-sm text-gray-700 mt-1">{{ treatment.description }}</p>
+                <span class="mt-1 px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    {% if treatment.status == 'completed' %}bg-green-100 text-green-800
+                    {% elif treatment.status == 'in_progress' %}bg-yellow-100 text-yellow-800
+                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                    {{ treatment.get_status_display }}
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-500">{% translate "No treatments defined" %}</p>
+        {% endif %}
+    </div>
+
+    <!-- Medical Costs -->
+    <div class="bg-white rounded-lg shadow p-6 mb-8">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-700">{% translate "Medical Costs" %}</h2>
+            <a href="{% url 'dashboard:care_plan_medical_costs' care_plan.id %}" class="text-blue-600 hover:text-blue-900">
+                <i class="fa fa-calculator"></i>
+            </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <p class="text-sm text-gray-500">{% translate "Total Medical Costs" %}</p>
+                <p class="text-xl font-semibold text-gray-900">${{ care_plan.total_medical_costs|floatformat:2 }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">{% translate "Monthly Cost Average" %}</p>
+                <p class="text-xl font-semibold text-gray-900">${{ care_plan.monthly_cost_average|floatformat:2 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Life Expectancy -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-700">{% translate "Life Expectancy" %}</h2>
+            <a href="{% url 'dashboard:care_plan_life_expectancy' care_plan.id %}" class="text-blue-600 hover:text-blue-900">
+                <i class="fa fa-heartbeat"></i>
+            </a>
+        </div>
+        {% if care_plan.life_expectancy %}
+        <div>
+            <p class="text-sm text-gray-500">{% translate "Estimated Years" %}</p>
+            <p class="text-xl font-semibold text-gray-900">{{ care_plan.life_expectancy }} {% translate "years" %}</p>
+        </div>
+        {% else %}
+        <p class="text-gray-500">{% translate "Life expectancy not yet calculated" %}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{% static 'js/app-bundle.js' %}" defer></script>
+{% endblock %}

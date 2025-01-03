@@ -1,12 +1,100 @@
 {% extends "web/base.html" %}
 {% load static %}
+{% load i18n %}
+
 {% block body %}
+<main class="relative">
+  <!-- Hero section -->
+  <div class="relative z-10">
+    {% include "web/components/hero.html" %}
+  </div>
 
-{% include "web/components/hero.html" %}
-{% include "web/components/feature_highlight.html" %}
-{% include "web/components/landing_section1.html" %}
-{% include "web/components/testimonials.html" %}
-{% include "web/components/landing_section2.html" %}
-{% include "web/components/cta.html" %}
+  <!-- Feature highlights -->
+  <div class="relative z-20 -mt-8">
+    {% include "web/components/feature_highlight.html" %}
+  </div>
 
+  <!-- Main content sections -->
+  <div class="relative overflow-hidden">
+    <!-- Section 1 -->
+    <div class="relative z-10">
+      {% include "web/components/landing_section1.html" %}
+    </div>
+
+    <!-- Testimonials with gradient background -->
+    <div class="relative z-20 -mt-8">
+      {% include "web/components/testimonials.html" %}
+    </div>
+
+    <!-- Section 2 -->
+    <div class="relative z-10">
+      {% include "web/components/landing_section2.html" %}
+    </div>
+
+    <!-- FAQ Section -->
+    <section class="relative z-10 py-24 sm:py-32">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+          <h2 class="text-base font-semibold leading-7 text-primary">{% translate "FAQ" %}</h2>
+          <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl">
+            {% translate "Frequently Asked Questions" %}
+          </p>
+        </div>
+        <div class="mx-auto mt-16 max-w-2xl divide-y divide-gray-900/10 dark:divide-gray-100/10">
+          <dl class="space-y-10">
+            <!-- Question 1 -->
+            <div>
+              <dt class="text-lg font-semibold leading-7 text-gray-900 dark:text-gray-100">
+                {% translate "What is a Life Care Plan?" %}
+              </dt>
+              <dd class="mt-4 text-base leading-7 text-gray-600 dark:text-gray-400">
+                {% translate "A Life Care Plan is a dynamic document that outlines current and future medical care needs and associated costs for individuals who have experienced catastrophic injury or chronic health conditions. It serves as a roadmap for ensuring comprehensive care and financial planning." %}
+              </dd>
+            </div>
+
+            <!-- Question 2 -->
+            <div>
+              <dt class="text-lg font-semibold leading-7 text-gray-900 dark:text-gray-100">
+                {% translate "How does your software help create Life Care Plans?" %}
+              </dt>
+              <dd class="mt-4 text-base leading-7 text-gray-600 dark:text-gray-400">
+                {% translate "Our software streamlines the process by providing customizable templates, automated cost calculations, and comprehensive reporting tools. It includes up-to-date cost databases, collaborative features, and professional report generation capabilities." %}
+              </dd>
+            </div>
+
+            <!-- Question 3 -->
+            <div>
+              <dt class="text-lg font-semibold leading-7 text-gray-900 dark:text-gray-100">
+                {% translate "Is my data secure and HIPAA compliant?" %}
+              </dt>
+              <dd class="mt-4 text-base leading-7 text-gray-600 dark:text-gray-400">
+                {% translate "Yes, our platform is fully HIPAA compliant and implements industry-leading security measures to protect sensitive healthcare data. We use encryption, secure access controls, and regular security audits to ensure data protection." %}
+              </dd>
+            </div>
+
+            <!-- Question 4 -->
+            <div>
+              <dt class="text-lg font-semibold leading-7 text-gray-900 dark:text-gray-100">
+                {% translate "Can I collaborate with other healthcare professionals?" %}
+              </dt>
+              <dd class="mt-4 text-base leading-7 text-gray-600 dark:text-gray-400">
+                {% translate "Yes, our platform includes robust collaboration features that allow you to securely share plans, gather input from team members, and coordinate care across multiple providers while maintaining complete control over access permissions." %}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA section -->
+    <div class="relative z-30 mt-8">
+      {% include "web/components/cta.html" %}
+    </div>
+  </div>
+
+  <!-- Global decorative background -->
+  <div class="absolute inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl" aria-hidden="true">
+    <div class="relative aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-primary to-blue-500 opacity-30"></div>
+  </div>
+</main>
 {% endblock %}

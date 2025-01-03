@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Main Circle -->
+  <circle cx="24" cy="24" r="22" fill="#DBEAFE"/>
+  
+  <!-- Medical Cross -->
+  <path d="M22 12H26V22H36V26H26V36H22V26H12V22H22V12Z" fill="#3B82F6"/>
+  
+  <!-- Pulse Line -->
+  <path d="M12 24H18L20 18L24 30L28 20L30 24H36" 
+        stroke="#1D4ED8" 
+        stroke-width="2" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+        fill="none"/>
+  
+  <!-- Decorative Dots -->
+  <circle cx="12" cy="12" r="2" fill="#60A5FA"/>
+  <circle cx="36" cy="36" r="2" fill="#60A5FA"/>
+  <circle cx="36" cy="12" r="2" fill="#60A5FA"/>
+  <circle cx="12" cy="36" r="2" fill="#60A5FA"/>
+  
+  <!-- Inner Ring -->
+  <circle cx="24" cy="24" r="18" 
+          stroke="#93C5FD" 
+          stroke-width="1" 
+          stroke-dasharray="4 4"
+          fill="none"/>
+</svg>

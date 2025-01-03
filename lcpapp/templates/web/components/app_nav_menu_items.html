@@ -14,6 +14,33 @@
     {% translate "Group Chat" %}
   </a>
 </li>
+<li class="menu-title">
+  <span>{% translate "Life Care Planning" %}</span>
+</li>
+<li>
+  <a href="{% url 'dashboard:evaluee_list' %}" {% if active_tab == 'patients' %}class="active"{% endif %}>
+    <i class="fa fa-users h-4 w-4"></i>
+    {% translate "Evaluees" %}
+  </a>
+</li>
+<li>
+  <a href="{% url 'dashboard:care_plan_list' %}" {% if active_tab == 'life-care-plans' %}class="active"{% endif %}>
+    <i class="fa fa-clipboard h-4 w-4"></i>
+    {% translate "Life Care Plans" %}
+  </a>
+</li>
+<li>
+  <a href="{% url 'dashboard:medical_costs' %}" {% if active_tab == 'medical-costs' %}class="active"{% endif %}>
+    <i class="fa fa-hospital h-4 w-4"></i>
+    {% translate "Medical Costs" %}
+  </a>
+</li>
+<li>
+  <a href="{% url 'dashboard:life_expectancy' %}" {% if active_tab == 'life-expectancy' %}class="active"{% endif %}>
+    <i class="fa fa-heartbeat h-4 w-4"></i>
+    {% translate "Life Expectancy" %}
+  </a>
+</li>
 {% if not user.is_anonymous %}
 <li class="menu-title">
   <span>{% translate "My Account" %}</span>

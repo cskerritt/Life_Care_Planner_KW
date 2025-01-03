@@ -1,0 +1,214 @@
+{% extends "web/app/app_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block app %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">{% translate "Medical Costs Calculator" %}</h1>
+        {% if care_plan %}
+        <button type="submit" form="costs-form" class="btn btn-primary">
+            <i class="fa fa-save mr-2"></i>
+            {% translate "Save to Care Plan" %}
+        </button>
+        {% endif %}
+    </div>
+
+    <form id="costs-form" method="POST" action="{% if care_plan %}{% url 'dashboard:care_plan_medical_costs' care_plan.id %}{% else %}{% url 'dashboard:medical_costs' %}{% endif %}">
+    {% csrf_token %}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">{% translate "Immediate Care" %}</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">{% translate "Emergency Services" %}</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">$</span>
+                        </div>
+                        <input type="number" name="emergency_cost" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0.00">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">{% translate "Hospital Stay" %}</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">$</span>
+                        </div>
+                        <input type="number" name="hospital_cost" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0.00">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">{% translate "Ongoing Care" %}</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">{% translate "Medications" %}</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">$</span>
+                        </div>
+                        <input type="number" name="medication_cost" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0.00">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">/month</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">{% translate "Therapy Sessions" %}</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">$</span>
+                        </div>
+                        <input type="number" name="therapy_cost" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0.00">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">/session</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">{% translate "Equipment & Supplies" %}</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">{% translate "Medical Equipment" %}</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">$</span>
+                        </div>
+                        <input type="number" name="equipment_cost" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0.00">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">{% translate "Monthly Supplies" %}</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">$</span>
+                        </div>
+                        <input type="number" name="supplies_cost" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0.00">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">/month</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cost Summary -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">{% translate "Cost Summary" %}</h2>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div>
+                    <h4 class="text-sm font-medium text-gray-500">{% translate "One-Time Costs" %}</h4>
+                    <p class="mt-2 text-2xl font-semibold text-gray-900" id="one-time-total">$0.00</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-medium text-gray-500">{% translate "Monthly Costs" %}</h4>
+                    <p class="mt-2 text-2xl font-semibold text-gray-900" id="monthly-total">$0.00</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-medium text-gray-500">{% translate "Annual Costs" %}</h4>
+                    <p class="mt-2 text-2xl font-semibold text-gray-900" id="annual-total">$0.00</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-medium text-gray-500">{% translate "Lifetime Estimate" %}</h4>
+                    <p class="mt-2 text-2xl font-semibold text-blue-600" id="lifetime-total">$0.00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cost Breakdown Chart -->
+    <div class="bg-white rounded-lg shadow mt-8">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">{% translate "Cost Breakdown" %}</h2>
+        </div>
+        <div class="p-6">
+            <canvas id="costBreakdownChart" class="w-full" height="300"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{% static 'js/app-bundle.js' %}" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize chart
+    const ctx = document.getElementById('costBreakdownChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: [
+                'Emergency Services',
+                'Hospital Stay',
+                'Medications',
+                'Therapy',
+                'Equipment',
+                'Supplies'
+            ],
+            datasets: [{
+                data: [0, 0, 0, 0, 0, 0],
+                backgroundColor: [
+                    '#EF4444',
+                    '#F59E0B',
+                    '#10B981',
+                    '#3B82F6',
+                    '#6366F1',
+                    '#8B5CF6'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right',
+                }
+            }
+        }
+    });
+
+    // Add input event listeners for real-time calculations
+    const inputs = document.querySelectorAll('input[type="number"]');
+    inputs.forEach(input => {
+        input.addEventListener('input', updateTotals);
+    });
+
+    function updateTotals() {
+        // Get all input values
+        const emergency = parseFloat(document.querySelector('[name="emergency_cost"]').value) || 0;
+        const hospital = parseFloat(document.querySelector('[name="hospital_cost"]').value) || 0;
+        const medication = parseFloat(document.querySelector('[name="medication_cost"]').value) || 0;
+        const therapy = parseFloat(document.querySelector('[name="therapy_cost"]').value) || 0;
+        const equipment = parseFloat(document.querySelector('[name="equipment_cost"]').value) || 0;
+        const supplies = parseFloat(document.querySelector('[name="supplies_cost"]').value) || 0;
+
+        // Calculate totals
+        const oneTime = emergency + hospital + equipment;
+        const monthly = medication + (therapy * 4) + supplies; // Assuming weekly therapy
+        const annual = monthly * 12;
+        const lifetime = oneTime + (annual * 25); // Assuming 25-year life expectancy
+
+        // Update summary displays
+        document.getElementById('one-time-total').textContent = `$${oneTime.toFixed(2)}`;
+        document.getElementById('monthly-total').textContent = `$${monthly.toFixed(2)}`;
+        document.getElementById('annual-total').textContent = `$${annual.toFixed(2)}`;
+        document.getElementById('lifetime-total').textContent = `$${lifetime.toFixed(2)}`;
+
+        // Update chart
+        chart.data.datasets[0].data = [emergency, hospital, medication, therapy, equipment, supplies];
+        chart.update();
+    }
+});
+</script>
+{% endblock %}

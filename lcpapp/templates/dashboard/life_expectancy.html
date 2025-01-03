@@ -1,0 +1,245 @@
+{% extends "web/app/app_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block app %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">{% translate "Life Expectancy Calculator" %}</h1>
+        {% if care_plan %}
+        <button type="submit" form="life-expectancy-form" class="btn btn-primary">
+            <i class="fa fa-save mr-2"></i>
+            {% translate "Save to Care Plan" %}
+        </button>
+        {% endif %}
+    </div>
+
+    <form id="life-expectancy-form" method="POST" action="{% if care_plan %}{% url 'dashboard:care_plan_life_expectancy' care_plan.id %}{% else %}{% url 'dashboard:life_expectancy' %}{% endif %}">
+    {% csrf_token %}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Input Form -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Basic Information -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">{% translate "Basic Information" %}</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">{% translate "Age" %}</label>
+                        <input type="number" name="age" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" min="0" max="120">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">{% translate "Gender" %}</label>
+                        <select name="gender" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <option value="">{% translate "Select gender" %}</option>
+                            <option value="male">{% translate "Male" %}</option>
+                            <option value="female">{% translate "Female" %}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Health Factors -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">{% translate "Health Factors" %}</h3>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Smoking Status" %}</label>
+                            <select name="smoking" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                <option value="never">{% translate "Never Smoked" %}</option>
+                                <option value="former">{% translate "Former Smoker" %}</option>
+                                <option value="current">{% translate "Current Smoker" %}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Physical Activity Level" %}</label>
+                            <select name="activity" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                <option value="sedentary">{% translate "Sedentary" %}</option>
+                                <option value="moderate">{% translate "Moderately Active" %}</option>
+                                <option value="active">{% translate "Very Active" %}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Conditions -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">{% translate "Medical Conditions" %}</h3>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" name="condition_diabetes" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label class="ml-2 block text-sm text-gray-700">{% translate "Diabetes" %}</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="condition_heart" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label class="ml-2 block text-sm text-gray-700">{% translate "Heart Disease" %}</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="condition_cancer" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label class="ml-2 block text-sm text-gray-700">{% translate "Cancer" %}</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" name="condition_respiratory" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label class="ml-2 block text-sm text-gray-700">{% translate "Respiratory Disease" %}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Family History -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">{% translate "Family History" %}</h3>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Parents' Average Age" %}</label>
+                            <input type="number" name="parents_age" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" min="0" max="120">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Grandparents' Average Age" %}</label>
+                            <input type="number" name="grandparents_age" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" min="0" max="120">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-lg shadow p-6 sticky top-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">{% translate "Life Expectancy Estimate" %}</h3>
+                
+                <!-- Estimated Years -->
+                <div class="text-center mb-8">
+                    <div class="text-5xl font-bold text-blue-600 mb-2" id="estimated-years">--</div>
+                    <div class="text-sm text-gray-500">{% translate "Estimated Years" %}</div>
+                </div>
+
+                <!-- Factors Breakdown -->
+                <div class="space-y-4">
+                    <h4 class="text-sm font-medium text-gray-700">{% translate "Impact Factors" %}</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">{% translate "Base Life Expectancy" %}</span>
+                            <span class="text-sm font-medium text-gray-900" id="base-expectancy">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">{% translate "Health Impact" %}</span>
+                            <span class="text-sm font-medium text-gray-900" id="health-impact">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">{% translate "Lifestyle Impact" %}</span>
+                            <span class="text-sm font-medium text-gray-900" id="lifestyle-impact">--</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">{% translate "Genetic Impact" %}</span>
+                            <span class="text-sm font-medium text-gray-900" id="genetic-impact">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-6">
+
+                <!-- Recommendations -->
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-3">{% translate "Recommendations" %}</h4>
+                    <ul class="space-y-2 text-sm text-gray-600" id="recommendations">
+                        <li class="flex items-start">
+                            <span class="text-gray-400">{% translate "Complete the form to see personalized recommendations" %}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{% static 'js/app-bundle.js' %}" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelectorAll('input, select');
+    form.forEach(input => {
+        input.addEventListener('change', calculateLifeExpectancy);
+    });
+
+    function calculateLifeExpectancy() {
+        const age = parseInt(document.querySelector('[name="age"]').value) || 0;
+        const gender = document.querySelector('[name="gender"]').value;
+        const smoking = document.querySelector('[name="smoking"]').value;
+        const activity = document.querySelector('[name="activity"]').value;
+        const parentsAge = parseInt(document.querySelector('[name="parents_age"]').value) || 0;
+        const grandparentsAge = parseInt(document.querySelector('[name="grandparents_age"]').value) || 0;
+
+        // Only calculate if we have the minimum required data
+        if (!age || !gender) {
+            return;
+        }
+
+        // Base life expectancy
+        let baseExpectancy = gender === 'female' ? 81 : 76;
+        
+        // Health impact
+        let healthImpact = 0;
+        if (document.querySelector('[name="condition_diabetes"]').checked) healthImpact -= 5;
+        if (document.querySelector('[name="condition_heart"]').checked) healthImpact -= 7;
+        if (document.querySelector('[name="condition_cancer"]').checked) healthImpact -= 8;
+        if (document.querySelector('[name="condition_respiratory"]').checked) healthImpact -= 6;
+
+        // Lifestyle impact
+        let lifestyleImpact = 0;
+        if (smoking === 'current') lifestyleImpact -= 10;
+        else if (smoking === 'former') lifestyleImpact -= 5;
+        
+        if (activity === 'active') lifestyleImpact += 5;
+        else if (activity === 'sedentary') lifestyleImpact -= 3;
+
+        // Genetic impact
+        let geneticImpact = 0;
+        if (parentsAge && grandparentsAge) {
+            const familyLongevity = (parentsAge + grandparentsAge) / 2;
+            geneticImpact = familyLongevity > 80 ? 5 : (familyLongevity > 70 ? 2 : -2);
+        }
+
+        // Calculate final estimate
+        const estimate = Math.max(age + 1, baseExpectancy + healthImpact + lifestyleImpact + geneticImpact);
+
+        // Update display
+        document.getElementById('estimated-years').textContent = Math.round(estimate);
+        document.getElementById('base-expectancy').textContent = `${baseExpectancy} years`;
+        document.getElementById('health-impact').textContent = `${healthImpact > 0 ? '+' : ''}${healthImpact} years`;
+        document.getElementById('lifestyle-impact').textContent = `${lifestyleImpact > 0 ? '+' : ''}${lifestyleImpact} years`;
+        document.getElementById('genetic-impact').textContent = `${geneticImpact > 0 ? '+' : ''}${geneticImpact} years`;
+
+        // Update recommendations
+        updateRecommendations(smoking, activity, healthImpact);
+    }
+
+    function updateRecommendations(smoking, activity, healthImpact) {
+        const recommendations = [];
+
+        if (smoking === 'current') {
+            recommendations.push('Consider smoking cessation programs to improve life expectancy');
+        }
+        if (activity === 'sedentary') {
+            recommendations.push('Increase physical activity to at least 150 minutes per week');
+        }
+        if (healthImpact < 0) {
+            recommendations.push('Regular medical check-ups and condition management recommended');
+        }
+
+        const recommendationsList = document.getElementById('recommendations');
+        recommendationsList.innerHTML = recommendations.length > 0 
+            ? recommendations.map(rec => `<li class="flex items-start">
+                <i class="fa fa-info-circle text-blue-500 mt-1 mr-2"></i>
+                <span>${rec}</span>
+               </li>`).join('')
+            : '<li class="flex items-start"><span class="text-green-600">Your current lifestyle choices are supporting longevity</span></li>';
+    }
+});
+</script>
+{% endblock %}

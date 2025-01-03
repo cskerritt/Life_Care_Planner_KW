@@ -1,51 +1,104 @@
 {% load static %}
+{% load i18n %}
 <section>
   <div class="overflow-hidden py-12" id="section2">
-    <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6 text-black">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8">
-        <div class="mb-8 lg:mb-0 relative">
-          <img src="{% static 'images/undraw/undraw_outer_space.svg' %}" alt="Amazing" class="lg:absolute top-0 right-0 w-[48rem] max-w-none sm:w-[57rem]" width="2432" height="1442">
+    <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 items-center">
+        <div class="order-2 lg:order-1 relative">
+          <div class="relative rounded-xl overflow-hidden bg-base-200 dark:bg-gray-800 shadow-xl">
+            <img src="{% static 'images/web/healthcare-analytics.svg' %}" alt="{% translate 'Healthcare Analytics Dashboard' %}" class="w-full">
+            <!-- Interactive overlay elements -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent">
+              <div class="absolute bottom-4 left-4 right-4 grid grid-cols-3 gap-4">
+                <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
+                  <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{% translate "Annual Cost" %}</div>
+                  <div class="text-lg font-bold text-primary">$124,500</div>
+                </div>
+                <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
+                  <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{% translate "Care Items" %}</div>
+                  <div class="text-lg font-bold text-primary">45</div>
+                </div>
+                <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
+                  <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{% translate "Providers" %}</div>
+                  <div class="text-lg font-bold text-primary">12</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Background gradient -->
+          <div class="absolute -z-10 left-0 top-0 h-full w-full">
+            <div class="absolute inset-0 bg-gradient-to-tr from-blue-500/30 to-primary/30 opacity-20 blur-3xl"></div>
+          </div>
         </div>
-        <div class="ml-8 space-y-8">
+
+        <div class="order-1 lg:order-2 space-y-8 lg:ml-8">
           <div class="max-w-screen-md mb-8 lg:mb-8">
-            <h2 class="text-base font-semibold leading-7 text-primary">Headling 2 in detail</h2>
-            <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl">This app is so great</p>
+            <h2 class="text-base font-semibold leading-7 text-primary">{% translate "Advanced Analysis & Reporting" %}</h2>
+            <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl">{% translate "Make Informed Care Decisions" %}</p>
             <p class="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
-               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet purus in odio ultricies
+              {% translate "Transform your life care planning data into actionable insights. Our powerful analysis tools help you make informed decisions and create professional reports that clearly communicate care needs and costs." %}
             </p>
           </div>
-          <div class="grid grid-cols-6">
-            <div class="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-primary/20 lg:h-12 lg:w-12">
-              <svg class="h-5 w-5 flex-none text-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M9.493 2.853a.75.75 0 00-1.486-.205L7.545 6H4.198a.75.75 0 000 1.5h3.14l-.69 5H3.302a.75.75 0 000 1.5h3.14l-.435 3.148a.75.75 0 001.486.205L7.955 14h2.986l-.434 3.148a.75.75 0 001.486.205L12.456 14h3.346a.75.75 0 000-1.5h-3.14l.69-5h3.346a.75.75 0 000-1.5h-3.14l.435-3.147a.75.75 0 00-1.486-.205L12.045 6H9.059l.434-3.147zM8.852 7.5l-.69 5h2.986l.69-5H8.852z" clip-rule="evenodd" />
-              </svg>
-            </div>
-            <div class="col-span-5">
-              <h3 class="mb-2 text-xl font-bold dark:text-gray-100">A feature</h3>
-              <p class="text-gray-500 dark:text-gray-400">And lorem ipsum</p>
+
+          <div class="group hover:bg-base-200 dark:hover:bg-gray-800 p-6 rounded-xl transition-all duration-300">
+            <div class="flex gap-4 items-start">
+              <div class="flex-shrink-0">
+                <div class="flex justify-center items-center w-12 h-12 rounded-xl bg-primary/20 group-hover:bg-primary/30 transition-colors duration-300">
+                  <svg class="h-6 w-6 text-primary" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.493 2.853a.75.75 0 00-1.486-.205L7.545 6H4.198a.75.75 0 000 1.5h3.14l-.69 5H3.302a.75.75 0 000 1.5h3.14l-.435 3.148a.75.75 0 001.486.205L7.955 14h2.986l-.434 3.148a.75.75 0 001.486.205L12.456 14h3.346a.75.75 0 000-1.5h-3.14l.69-5h3.346a.75.75 0 000-1.5h-3.14l.435-3.147a.75.75 0 00-1.486-.205L12.045 6H9.059l.434-3.147zM8.852 7.5l-.69 5h2.986l.69-5H8.852z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100">{% translate "Advanced Cost Projections" %}</h3>
+                <p class="text-gray-600 dark:text-gray-400">{% translate "Generate detailed cost projections that account for inflation, regional variations, and changing care needs over time." %}</p>
+                <ul class="mt-4 space-y-2 text-gray-500 dark:text-gray-400">
+                  <li class="flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    {% translate "Lifetime Cost Calculations" %}
+                  </li>
+                  <li class="flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    {% translate "Multiple Scenario Analysis" %}
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-          <div class="grid grid-cols-6">
-            <div class="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-primary/20 lg:h-12 lg:w-12">
-              <svg class="h-5 w-5 flex-none text-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="M4.5 2A1.5 1.5 0 003 3.5v13A1.5 1.5 0 004.5 18h11a1.5 1.5 0 001.5-1.5V7.621a1.5 1.5 0 00-.44-1.06l-4.12-4.122A1.5 1.5 0 0011.378 2H4.5zm2.25 8.5a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5zm0 3a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5z" clip-rule="evenodd" />
-              </svg>
-            </div>
-            <div class="col-span-5">
-              <h3 class="mb-2 text-xl font-bold dark:text-gray-100">Another one</h3>
-              <p class="text-gray-500 dark:text-gray-400">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet purus in odio ultricies</p>
-            </div>
-          </div>
-          <div class="grid grid-cols-6">
-            <div class="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-primary/20 lg:h-12 lg:w-12">
-              <svg class="h-5 w-5 flex-none text-primary" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path d="M9.25 13.25a.75.75 0 001.5 0V4.636l2.955 3.129a.75.75 0 001.09-1.03l-4.25-4.5a.75.75 0 00-1.09 0l-4.25 4.5a.75.75 0 101.09 1.03L9.25 4.636v8.614z" />
-                <path d="M3.5 12.75a.75.75 0 00-1.5 0v2.5A2.75 2.75 0 004.75 18h10.5A2.75 2.75 0 0018 15.25v-2.5a.75.75 0 00-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5z" />
-              </svg>
-            </div>
-            <div class="col-span-5">
-              <h3 class="mb-2 text-xl font-bold dark:text-gray-100">And a third</h3>
-              <p class="text-gray-500 dark:text-gray-400">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet purus in odio ultricies</p>
+
+          <div class="group hover:bg-base-200 dark:hover:bg-gray-800 p-6 rounded-xl transition-all duration-300">
+            <div class="flex gap-4 items-start">
+              <div class="flex-shrink-0">
+                <div class="flex justify-center items-center w-12 h-12 rounded-xl bg-primary/20 group-hover:bg-primary/30 transition-colors duration-300">
+                  <svg class="h-6 w-6 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="mb-2 text-xl font-bold text-gray-900 dark:text-gray-100">{% translate "Interactive Analytics" %}</h3>
+                <p class="text-gray-600 dark:text-gray-400">{% translate "Transform complex data into clear visual insights with interactive charts and real-time analysis tools." %}</p>
+                <ul class="mt-4 space-y-2 text-gray-500 dark:text-gray-400">
+                  <li class="flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    {% translate "Dynamic Data Visualization" %}
+                  </li>
+                  <li class="flex items-center">
+                    <svg class="w-4 h-4 mr-2 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    {% translate "Trend Analysis" %}
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

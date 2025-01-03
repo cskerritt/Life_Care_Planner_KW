@@ -1,37 +1,99 @@
 {% load static %}
-<section class="py-6 sm:py-12">
-  <div class="grid grid-cols-1 lg:grid-cols-2 mx-auto max-w-7xl">
-    <div class="px-8">
-      <figure class="max-w-screen-md mx-auto">
-          <blockquote>
-              <p class="text-xl">
-                “As a project manager, I've been using 'SaaS Product X' for over a year now and it has completely transformed the way we work. he intuitive interface and powerful features have streamlined our processes, saving us countless hours.”
-              </p>
-          </blockquote>
-          <figcaption class="flex items-center justify-center mt-6 space-x-3 rtl:space-x-reverse">
-              <img class="h-14 w-14 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces" alt="profile picture">
-              <div class="flex items-center divide-x-2 rtl:divide-x-reverse divide-gray-500 dark:divide-gray-700">
-                  <cite class="pe-3 font-medium text-gray-900 dark:text-gray-100">Alice Hayley</cite>
-                  <cite class="ps-3 text-gray-600 dark:text-gray-400">CEO Company X</cite>
-              </div>
-          </figcaption>
+{% load i18n %}
+<section class="relative py-16 sm:py-24 overflow-hidden">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="mx-auto max-w-xl text-center mb-16">
+      <h2 class="text-base font-semibold leading-7 text-primary">{% translate "Trusted by Professionals" %}</h2>
+      <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl">
+        {% translate "What Healthcare Professionals Say" %}
+      </p>
+    </div>
+
+    <div class="mx-auto grid max-w-2xl grid-cols-1 grid-rows-1 gap-8 text-sm leading-6 text-gray-900 sm:grid-cols-2 xl:mx-0 xl:max-w-none xl:grid-cols-3">
+      <figure class="group relative rounded-2xl bg-base-100 dark:bg-gray-800 p-6 shadow-lg ring-1 ring-gray-900/5 transition-all duration-300 hover:scale-105">
+        <blockquote class="text-gray-900 dark:text-gray-100">
+          <p class="text-lg">{% translate "As a Nurse Life Care Planner, this software has revolutionized how I create and manage care plans. The automated calculations and professional report generation save me hours on each case." %}</p>
+        </blockquote>
+        <figcaption class="mt-6 flex items-center gap-x-4">
+          <img class="h-14 w-14 rounded-full bg-gray-50" src="https://ui-avatars.com/api/?name=Sarah+Johnson&background=3B82F6&color=fff" alt="Dr. Sarah Johnson">
+          <div>
+            <div class="font-semibold text-gray-900 dark:text-gray-100">{% translate "Dr. Sarah Johnson" %}</div>
+            <div class="text-gray-600 dark:text-gray-400">{% translate "CNLCP, Life Care Planning Specialist" %}</div>
+            <div class="mt-1 flex items-center">
+              {% for i in "12345" %}
+                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+              {% endfor %}
+            </div>
+          </div>
+        </figcaption>
+      </figure>
+
+      <figure class="group relative rounded-2xl bg-base-100 dark:bg-gray-800 p-6 shadow-lg ring-1 ring-gray-900/5 transition-all duration-300 hover:scale-105">
+        <blockquote class="text-gray-900 dark:text-gray-100">
+          <p class="text-lg">{% translate "The cost projection features and detailed analytics have been invaluable. Being able to quickly generate comprehensive life care plans with accurate cost estimates has transformed our practice." %}</p>
+        </blockquote>
+        <figcaption class="mt-6 flex items-center gap-x-4">
+          <img class="h-14 w-14 rounded-full bg-gray-50" src="https://ui-avatars.com/api/?name=Michael+Chen&background=3B82F6&color=fff" alt="Michael Chen">
+          <div>
+            <div class="font-semibold text-gray-900 dark:text-gray-100">{% translate "Michael Chen, Ph.D." %}</div>
+            <div class="text-gray-600 dark:text-gray-400">{% translate "Healthcare Economics Consultant" %}</div>
+            <div class="mt-1 flex items-center">
+              {% for i in "12345" %}
+                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+              {% endfor %}
+            </div>
+          </div>
+        </figcaption>
+      </figure>
+
+      <figure class="group relative rounded-2xl bg-base-100 dark:bg-gray-800 p-6 shadow-lg ring-1 ring-gray-900/5 transition-all duration-300 hover:scale-105">
+        <blockquote class="text-gray-900 dark:text-gray-100">
+          <p class="text-lg">{% translate "The collaborative features and customizable templates have streamlined our entire workflow. It's made coordinating care plans across our team much more efficient." %}</p>
+        </blockquote>
+        <figcaption class="mt-6 flex items-center gap-x-4">
+          <img class="h-14 w-14 rounded-full bg-gray-50" src="https://ui-avatars.com/api/?name=Emily+Rodriguez&background=3B82F6&color=fff" alt="Dr. Emily Rodriguez">
+          <div>
+            <div class="font-semibold text-gray-900 dark:text-gray-100">{% translate "Dr. Emily Rodriguez" %}</div>
+            <div class="text-gray-600 dark:text-gray-400">{% translate "Rehabilitation Director" %}</div>
+            <div class="mt-1 flex items-center">
+              {% for i in "12345" %}
+                <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+              {% endfor %}
+            </div>
+          </div>
+        </figcaption>
       </figure>
     </div>
-    <div class="px-8 pt-16 lg:pt-0">
-      <figure class="max-w-screen-md mx-auto">
-          <blockquote>
-              <p class="text-xl">
-                “As a project manager, I've been using 'SaaS Product X' for over a year now and it has completely transformed the way we work. he intuitive interface and powerful features have streamlined our processes, saving us countless hours.”
-              </p>
-          </blockquote>
-          <figcaption class="flex items-center justify-center mt-6 space-x-3 rtl:space-x-reverse">
-              <img class="h-14 w-14 rounded-full object-fit-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?&w=100&h=100&fit=crop&crop=faces" alt="profile picture">
-              <div class="flex items-center divide-x-2 rtl:divide-x-reverse divide-gray-500 dark:divide-gray-700">
-                  <cite class="pe-3 font-medium text-gray-900 dark:text-gray-100">Bob Herberts</cite>
-                  <cite class="ps-3 text-gray-600 dark:text-gray-400">founder Company Y</cite>
-              </div>
-          </figcaption>
-      </figure>
+
+    <!-- Trust indicators -->
+    <div class="mt-16 grid grid-cols-2 gap-8 sm:grid-cols-4">
+      <div class="text-center">
+        <div class="text-4xl font-bold text-primary">95%</div>
+        <div class="mt-2 text-base text-gray-600 dark:text-gray-400">{% translate "Customer Satisfaction" %}</div>
+      </div>
+      <div class="text-center">
+        <div class="text-4xl font-bold text-primary">10k+</div>
+        <div class="mt-2 text-base text-gray-600 dark:text-gray-400">{% translate "Care Plans Created" %}</div>
+      </div>
+      <div class="text-center">
+        <div class="text-4xl font-bold text-primary">500+</div>
+        <div class="mt-2 text-base text-gray-600 dark:text-gray-400">{% translate "Healthcare Providers" %}</div>
+      </div>
+      <div class="text-center">
+        <div class="text-4xl font-bold text-primary">4.9/5</div>
+        <div class="mt-2 text-base text-gray-600 dark:text-gray-400">{% translate "Average Rating" %}</div>
+      </div>
     </div>
+  </div>
+
+  <!-- Decorative background elements -->
+  <div class="absolute inset-x-0 -top-16 -z-10 flex transform-gpu justify-center overflow-hidden blur-3xl">
+    <div class="aspect-[1318/752] w-[82.375rem] flex-none bg-gradient-to-r from-primary/40 to-blue-500/40 opacity-25"></div>
   </div>
 </section>

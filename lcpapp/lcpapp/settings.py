@@ -415,11 +415,11 @@ WAGTAILADMIN_BASE_URL = "http://localhost:8000"
 
 # replace any values below with specifics for your project
 PROJECT_METADATA = {
-    "NAME": gettext_lazy("LCP App"),
+    "NAME": gettext_lazy("Life Care Planner"),
     "URL": "http://localhost:8000",
-    "DESCRIPTION": gettext_lazy("This is the application for the LCP Software"),
+    "DESCRIPTION": gettext_lazy("Streamline your life care planning process with our comprehensive table creation software. Create detailed, professional life care plans efficiently and accurately."),
     "IMAGE": "https://upload.wikimedia.org/wikipedia/commons/2/20/PEO-pegasus_black.svg",
-    "KEYWORDS": "SaaS, django",
+    "KEYWORDS": "Life Care Planning, Medical Care, Healthcare Planning, Care Cost Estimation",
     "CONTACT_EMAIL": "christophertskerritt@gmail.com",
 }
 
