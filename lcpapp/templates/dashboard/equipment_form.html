@@ -1,0 +1,179 @@
+{% extends "web/app/app_base.html" %}
+{% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block app %}
+<div class="space-y-6">
+    <div class="flex justify-between items-center">
+        <h1 class="text-3xl font-bold text-gray-900">{% translate "Add New Equipment" %}</h1>
+        <a href="{% url 'dashboard:care_plan_detail' care_plan.id %}" class="btn btn-outline">
+            <i class="fas fa-arrow-left mr-2"></i>
+            {% translate "Back to Life Care Plan" %}
+        </a>
+    </div>
+
+    <div class="bg-white shadow rounded-lg">
+        <form method="post" class="space-y-6 p-6">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Basic Information -->
+                <div class="col-span-2">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Basic Information" %}</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Name -->
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Equipment Name" %}</label>
+                            {{ form.name|as_crispy_field }}
+                        </div>
+
+                        <!-- Category -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Category" %}</label>
+                            {{ form.category|as_crispy_field }}
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Description" %}</label>
+                            {{ form.description|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cost and Replacement -->
+                <div class="col-span-2">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Cost and Replacement" %}</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Cost -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Cost" %}</label>
+                            {{ form.cost|as_crispy_field }}
+                        </div>
+
+                        <!-- Replacement Frequency -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Replacement Frequency" %}</label>
+                            {{ form.replacement_frequency|as_crispy_field }}
+                        </div>
+
+                        <!-- Life Expectancy -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Life Expectancy (years)" %}</label>
+                            {{ form.life_expectancy|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manufacturer Details -->
+                <div class="col-span-2">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Manufacturer Details" %}</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Manufacturer -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Manufacturer" %}</label>
+                            {{ form.manufacturer|as_crispy_field }}
+                        </div>
+
+                        <!-- Model Number -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Model Number" %}</label>
+                            {{ form.model_number|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Supplier Information -->
+                <div class="col-span-2">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Supplier Information" %}</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Supplier -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Supplier" %}</label>
+                            {{ form.supplier|as_crispy_field }}
+                        </div>
+
+                        <!-- Supplier Contact -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Supplier Contact" %}</label>
+                            {{ form.supplier_contact|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Notes -->
+                <div class="col-span-2">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Additional Notes" %}</h2>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">{% translate "Notes" %}</label>
+                        {{ form.notes|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+
+            {% if form.errors %}
+            <div class="rounded-md bg-red-50 p-4 mt-6">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-circle text-red-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">
+                            {% translate "There were errors with your submission" %}
+                        </h3>
+                        <div class="mt-2 text-sm text-red-700">
+                            {{ form.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="flex justify-end space-x-3 pt-6 border-t">
+                <a href="{% url 'dashboard:care_plan_detail' care_plan.id %}" class="btn btn-outline">
+                    {% translate "Cancel" %}
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    {% translate "Add Equipment" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize any special form elements
+    const costInput = document.querySelector('input[name="cost"]');
+    if (costInput) {
+        // Add currency formatting
+        costInput.addEventListener('blur', function(e) {
+            const value = parseFloat(this.value);
+            if (!isNaN(value)) {
+                this.value = value.toFixed(2);
+            }
+        });
+    }
+
+    // Show/hide life expectancy based on replacement frequency
+    const frequencySelect = document.querySelector('select[name="replacement_frequency"]');
+    const lifeExpectancyDiv = document.querySelector('input[name="life_expectancy"]').closest('div').parentElement;
+    
+    function toggleLifeExpectancy() {
+        if (frequencySelect.value === 'one_time') {
+            lifeExpectancyDiv.style.display = 'block';
+        } else {
+            lifeExpectancyDiv.style.display = 'none';
+        }
+    }
+
+    if (frequencySelect && lifeExpectancyDiv) {
+        frequencySelect.addEventListener('change', toggleLifeExpectancy);
+        toggleLifeExpectancy(); // Initial state
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

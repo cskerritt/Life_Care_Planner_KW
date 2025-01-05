@@ -1,0 +1,33 @@
+{% extends "web/app/app_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block app %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white shadow rounded-lg p-6">
+        <div class="text-center">
+            <i class="fas fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                {% translate "Delete Patient" %}
+            </h2>
+            <p class="text-gray-500 mb-6">
+                {% blocktranslate with name=patient.get_full_name %}
+                Are you sure you want to delete the patient "{{ name }}"? This action cannot be undone.
+                {% endblocktranslate %}
+            </p>
+            <div class="flex justify-center space-x-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash mr-2"></i>
+                        {% translate "Delete Patient" %}
+                    </button>
+                </form>
+                <a href="{% url 'dashboard:patient_detail' patient.pk %}" class="btn btn-outline">
+                    {% translate "Cancel" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

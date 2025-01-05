@@ -1,22 +1,39 @@
 {% extends "web/base.html" %}
 {% load static %}
-{% block top_nav %}
-  {% include 'web/components/top_nav_app.html' %}
-{% endblock %}
+{% load i18n %}
+
 {% block body %}
-  {% block notifications %}
-  {% endblock %}
-  <section class="section">
-    <div class="container flex flex-row">
-      <div class="w-64 hidden lg:flex">
-        {% block sidebar-nav %}
-          {% include "web/components/app_nav.html" %}
+<div class="flex h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-lg">
+        {% block sidebar %}
+            {% include "web/components/sidebar.html" %}
         {% endblock %}
-      </div>
-      <div class="w-full">
-        {% block app %}
-        {% endblock %}
-      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+        <!-- Navbar -->
+        <nav class="bg-white shadow-sm">
+            {% block navbar %}
+                {% include "web/components/navbar.html" %}
+            {% endblock %}
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto p-6">
+            {% if messages %}
+                <div class="mb-4">
+                    {% for message in messages %}
+                        <div class="p-4 rounded-md {% if message.tags == 'error' %}bg-red-50 text-red-700{% else %}bg-green-50 text-green-700{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            {% block app %}{% endblock %}
+        </main>
     </div>
-  </section>
+</div>
 {% endblock %}

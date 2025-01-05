@@ -1,0 +1,211 @@
+{% extends "web/app/app_base.html" %}
+{% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block app %}
+<div class="space-y-6">
+    <div class="flex justify-between items-center">
+        <h1 class="text-3xl font-bold text-gray-900">
+            {% if home_care %}
+                {% translate "Edit Home Care Service" %}
+            {% else %}
+                {% translate "Add New Home Care Service" %}
+            {% endif %}
+        </h1>
+        <a href="{% url 'dashboard:care_plan_detail' care_plan.id %}" class="btn btn-outline">
+            <i class="fas fa-arrow-left mr-2"></i>
+            {% translate "Back to Life Care Plan" %}
+        </a>
+    </div>
+
+    <div class="bg-white shadow rounded-lg">
+        <form method="post" class="space-y-6 p-6">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Service Information -->
+                <div class="col-span-2">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Service Information" %}</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Service Type -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Service Type" %}</label>
+                            {{ form.service_type|as_crispy_field }}
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Description" %}</label>
+                            {{ form.description|as_crispy_field }}
+                        </div>
+
+                        <!-- Requirements -->
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Special Requirements" %}</label>
+                            {{ form.requirements|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Provider Information -->
+                <div class="col-span-2">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Provider Information" %}</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Provider Type -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Provider Type" %}</label>
+                            {{ form.provider_type|as_crispy_field }}
+                        </div>
+
+                        <!-- Provider Name -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Provider Name" %}</label>
+                            {{ form.provider_name|as_crispy_field }}
+                        </div>
+
+                        <!-- Provider Contact -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Provider Contact" %}</label>
+                            {{ form.provider_contact|as_crispy_field }}
+                        </div>
+
+                        <!-- Provider Credentials -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Provider Credentials" %}</label>
+                            {{ form.provider_credentials|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule and Cost -->
+                <div class="col-span-2">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Schedule and Cost" %}</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Frequency -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Frequency" %}</label>
+                            {{ form.frequency|as_crispy_field }}
+                        </div>
+
+                        <!-- Hours per Visit -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Hours per Visit" %}</label>
+                            {{ form.hours_per_visit|as_crispy_field }}
+                        </div>
+
+                        <!-- Rate per Hour -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{% translate "Rate per Hour" %}</label>
+                            {{ form.rate_per_hour|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cost Summary -->
+                <div class="col-span-2 bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-md font-medium text-gray-900 mb-3">{% translate "Cost Summary" %}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500">{% translate "Cost per Visit" %}</p>
+                            <p class="text-lg font-medium text-gray-900" id="costPerVisit">$0.00</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">{% translate "Monthly Cost" %}</p>
+                            <p class="text-lg font-medium text-gray-900" id="monthlyCost">$0.00</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">{% translate "Annual Cost" %}</p>
+                            <p class="text-lg font-medium text-gray-900" id="annualCost">$0.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Notes -->
+                <div class="col-span-2">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Additional Notes" %}</h2>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">{% translate "Notes" %}</label>
+                        {{ form.notes|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+
+            {% if form.errors %}
+            <div class="rounded-md bg-red-50 p-4 mt-6">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-circle text-red-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">
+                            {% translate "There were errors with your submission" %}
+                        </h3>
+                        <div class="mt-2 text-sm text-red-700">
+                            {{ form.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="flex justify-end space-x-3 pt-6 border-t">
+                <a href="{% url 'dashboard:care_plan_detail' care_plan.id %}" class="btn btn-outline">
+                    {% translate "Cancel" %}
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    {% if home_care %}
+                        {% translate "Update Service" %}
+                    {% else %}
+                        {% translate "Add Service" %}
+                    {% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const hoursInput = document.querySelector('input[name="hours_per_visit"]');
+    const rateInput = document.querySelector('input[name="rate_per_hour"]');
+    const frequencySelect = document.querySelector('select[name="frequency"]');
+    
+    const costPerVisitElement = document.getElementById('costPerVisit');
+    const monthlyCostElement = document.getElementById('monthlyCost');
+    const annualCostElement = document.getElementById('annualCost');
+    
+    function calculateCosts() {
+        const hours = parseFloat(hoursInput.value) || 0;
+        const rate = parseFloat(rateInput.value) || 0;
+        const frequency = frequencySelect.value;
+        
+        const costPerVisit = hours * rate;
+        let monthlyCost = 0;
+        
+        if (frequency === 'daily') {
+            monthlyCost = costPerVisit * 30;
+        } else if (frequency === 'weekly') {
+            monthlyCost = costPerVisit * 4;
+        } else if (frequency === 'monthly') {
+            monthlyCost = costPerVisit;
+        }
+        
+        const annualCost = monthlyCost * 12;
+        
+        costPerVisitElement.textContent = `$${costPerVisit.toFixed(2)}`;
+        monthlyCostElement.textContent = `$${monthlyCost.toFixed(2)}`;
+        annualCostElement.textContent = `$${annualCost.toFixed(2)}`;
+    }
+    
+    hoursInput.addEventListener('input', calculateCosts);
+    rateInput.addEventListener('input', calculateCosts);
+    frequencySelect.addEventListener('change', calculateCosts);
+    
+    // Initial calculation
+    calculateCosts();
+});
+</script>
+{% endblock %}
+{% endblock %}

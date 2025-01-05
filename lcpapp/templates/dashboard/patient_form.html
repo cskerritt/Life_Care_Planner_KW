@@ -1,0 +1,475 @@
+{% extends "web/app/app_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block app %}
+<div class="space-y-6">
+    <div class="flex justify-between items-center">
+        <h1 class="text-3xl font-bold text-gray-900">
+            {% if patient %}
+                {% translate "Edit Patient" %}
+            {% else %}
+                {% translate "Add New Patient" %}
+            {% endif %}
+        </h1>
+        <a href="{% url 'dashboard:patient_list' %}" class="btn btn-outline">
+            <i class="fas fa-arrow-left mr-2"></i>
+            {% translate "Back to Patients" %}
+        </a>
+    </div>
+
+    <form method="post" class="space-y-8">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="rounded-md bg-red-50 p-4">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-circle text-red-400"></i>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-800">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Personal Information -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Personal Information" %}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "First Name" %}*
+                    </label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.first_name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.middle_name.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Middle Name" %}
+                    </label>
+                    {{ form.middle_name }}
+                    {% if form.middle_name.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.middle_name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Last Name" %}*
+                    </label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.last_name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.date_of_birth.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Date of Birth" %}*
+                    </label>
+                    {{ form.date_of_birth }}
+                    {% if form.date_of_birth.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.date_of_birth.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.gender.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Gender" %}*
+                    </label>
+                    {{ form.gender }}
+                    {% if form.gender.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.gender.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.marital_status.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Marital Status" %}*
+                    </label>
+                    {{ form.marital_status }}
+                    {% if form.marital_status.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.marital_status.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.ssn.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Social Security Number" %}
+                    </label>
+                    {{ form.ssn }}
+                    {% if form.ssn.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.ssn.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Email" %}
+                    </label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.phone_primary.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Primary Phone" %}*
+                    </label>
+                    {{ form.phone_primary }}
+                    {% if form.phone_primary.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.phone_primary.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.phone_secondary.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Secondary Phone" %}
+                    </label>
+                    {{ form.phone_secondary }}
+                    {% if form.phone_secondary.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.phone_secondary.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Address Information -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Address Information" %}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="md:col-span-2">
+                    <label for="{{ form.address_line1.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Address Line 1" %}*
+                    </label>
+                    {{ form.address_line1 }}
+                    {% if form.address_line1.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.address_line1.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="md:col-span-2">
+                    <label for="{{ form.address_line2.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Address Line 2" %}
+                    </label>
+                    {{ form.address_line2 }}
+                    {% if form.address_line2.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.address_line2.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.city.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "City" %}*
+                    </label>
+                    {{ form.city }}
+                    {% if form.city.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.city.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.state.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "State" %}*
+                    </label>
+                    {{ form.state }}
+                    {% if form.state.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.state.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.zip_code.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "ZIP Code" %}*
+                    </label>
+                    {{ form.zip_code }}
+                    {% if form.zip_code.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.zip_code.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Contact -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Emergency Contact" %}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label for="{{ form.emergency_contact_name.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Name" %}*
+                    </label>
+                    {{ form.emergency_contact_name }}
+                    {% if form.emergency_contact_name.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.emergency_contact_name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.emergency_contact_relationship.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Relationship" %}*
+                    </label>
+                    {{ form.emergency_contact_relationship }}
+                    {% if form.emergency_contact_relationship.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.emergency_contact_relationship.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.emergency_contact_phone.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Phone" %}*
+                    </label>
+                    {{ form.emergency_contact_phone }}
+                    {% if form.emergency_contact_phone.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.emergency_contact_phone.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Insurance Information -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Insurance Information" %}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label for="{{ form.primary_insurance.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Primary Insurance" %}
+                    </label>
+                    {{ form.primary_insurance }}
+                    {% if form.primary_insurance.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.primary_insurance.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.primary_insurance_id.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Primary Insurance ID" %}
+                    </label>
+                    {{ form.primary_insurance_id }}
+                    {% if form.primary_insurance_id.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.primary_insurance_id.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.primary_insurance_group.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Primary Insurance Group" %}
+                    </label>
+                    {{ form.primary_insurance_group }}
+                    {% if form.primary_insurance_group.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.primary_insurance_group.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.secondary_insurance.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Secondary Insurance" %}
+                    </label>
+                    {{ form.secondary_insurance }}
+                    {% if form.secondary_insurance.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.secondary_insurance.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.secondary_insurance_id.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Secondary Insurance ID" %}
+                    </label>
+                    {{ form.secondary_insurance_id }}
+                    {% if form.secondary_insurance_id.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.secondary_insurance_id.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.secondary_insurance_group.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Secondary Insurance Group" %}
+                    </label>
+                    {{ form.secondary_insurance_group }}
+                    {% if form.secondary_insurance_group.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.secondary_insurance_group.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Medical Information -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Medical Information" %}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="{{ form.primary_physician.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Primary Physician" %}
+                    </label>
+                    {{ form.primary_physician }}
+                    {% if form.primary_physician.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.primary_physician.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.primary_physician_phone.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Primary Physician Phone" %}
+                    </label>
+                    {{ form.primary_physician_phone }}
+                    {% if form.primary_physician_phone.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.primary_physician_phone.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.preferred_pharmacy.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Preferred Pharmacy" %}
+                    </label>
+                    {{ form.preferred_pharmacy }}
+                    {% if form.preferred_pharmacy.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.preferred_pharmacy.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.preferred_pharmacy_phone.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Preferred Pharmacy Phone" %}
+                    </label>
+                    {{ form.preferred_pharmacy_phone }}
+                    {% if form.preferred_pharmacy_phone.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.preferred_pharmacy_phone.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="md:col-span-2">
+                    <label for="{{ form.allergies.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Allergies" %}
+                    </label>
+                    {{ form.allergies }}
+                    {% if form.allergies.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.allergies.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="md:col-span-2">
+                    <label for="{{ form.medical_conditions.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Medical Conditions" %}
+                    </label>
+                    {{ form.medical_conditions }}
+                    {% if form.medical_conditions.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.medical_conditions.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Additional Information" %}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="{{ form.occupation.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Occupation" %}
+                    </label>
+                    {{ form.occupation }}
+                    {% if form.occupation.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.occupation.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.employer.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Employer" %}
+                    </label>
+                    {{ form.employer }}
+                    {% if form.employer.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.employer.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="md:col-span-2">
+                    <label for="{{ form.notes.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Notes" %}
+                    </label>
+                    {{ form.notes }}
+                    {% if form.notes.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.notes.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex justify-end space-x-3">
+            <a href="{% url 'dashboard:patient_list' %}" class="btn btn-outline">
+                {% translate "Cancel" %}
+            </a>
+            <button type="submit" class="btn btn-primary">
+                {% if patient %}
+                    {% translate "Update Patient" %}
+                {% else %}
+                    {% translate "Add Patient" %}
+                {% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Format phone numbers as they are typed
+    function formatPhoneNumber(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value.length >= 10) {
+            value = value.slice(0, 10);
+            value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6)}`;
+        }
+        input.value = value;
+    }
+
+    // Format SSN as it is typed
+    function formatSSN(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value.length >= 9) {
+            value = value.slice(0, 9);
+            value = `${value.slice(0, 3)}-${value.slice(3, 5)}-${value.slice(5)}`;
+        }
+        input.value = value;
+    }
+
+    // Format ZIP code as it is typed
+    function formatZIPCode(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value.length > 5) {
+            value = `${value.slice(0, 5)}-${value.slice(5, 9)}`;
+        }
+        input.value = value;
+    }
+
+    // Add event listeners to phone number inputs
+    const phoneInputs = document.querySelectorAll('input[id$="phone"]');
+    phoneInputs.forEach(input => {
+        input.addEventListener('input', () => formatPhoneNumber(input));
+    });
+
+    // Add event listener to SSN input
+    const ssnInput = document.getElementById('{{ form.ssn.id_for_label }}');
+    if (ssnInput) {
+        ssnInput.addEventListener('input', () => formatSSN(ssnInput));
+    }
+
+    // Add event listener to ZIP code input
+    const zipInput = document.getElementById('{{ form.zip_code.id_for_label }}');
+    if (zipInput) {
+        zipInput.addEventListener('input', () => formatZIPCode(zipInput));
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

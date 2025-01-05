@@ -1,0 +1,232 @@
+{% extends "web/app/app_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block app %}
+<div class="space-y-6">
+    <div class="flex justify-between items-center">
+        <h1 class="text-3xl font-bold text-gray-900">{% translate "Equipment & Supplies" %}</h1>
+        <div class="flex space-x-3">
+            <a href="{% url 'dashboard:equipment_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus mr-2"></i>
+                {% translate "Add New Equipment" %}
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white shadow rounded-lg p-6">
+        <form method="get" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <label for="category" class="block text-sm font-medium text-gray-700">{% translate "Category" %}</label>
+                <select name="category" id="category" class="mt-1 form-select">
+                    <option value="">{% translate "All Categories" %}</option>
+                    {% for value, label in category_choices %}
+                        <option value="{{ value }}" {% if category == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="frequency" class="block text-sm font-medium text-gray-700">{% translate "Replacement Frequency" %}</label>
+                <select name="frequency" id="frequency" class="mt-1 form-select">
+                    <option value="">{% translate "All Frequencies" %}</option>
+                    {% for value, label in frequency_choices %}
+                        <option value="{{ value }}" {% if frequency == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="sort" class="block text-sm font-medium text-gray-700">{% translate "Sort By" %}</label>
+                <select name="sort" id="sort" class="mt-1 form-select">
+                    <option value="name" {% if sort == 'name' %}selected{% endif %}>{% translate "Name" %}</option>
+                    <option value="category" {% if sort == 'category' %}selected{% endif %}>{% translate "Category" %}</option>
+                    <option value="cost" {% if sort == 'cost' %}selected{% endif %}>{% translate "Cost" %}</option>
+                    <option value="-created_at" {% if sort == '-created_at' %}selected{% endif %}>{% translate "Newest First" %}</option>
+                </select>
+            </div>
+
+            <div class="flex items-end">
+                <button type="submit" class="btn btn-secondary w-full">
+                    <i class="fas fa-filter mr-2"></i>
+                    {% translate "Apply Filters" %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Equipment Table -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% translate "Name" %}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% translate "Category" %}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% translate "Cost" %}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% translate "Frequency" %}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% translate "Annual Cost" %}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% translate "Actions" %}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for equipment in equipment_list %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="text-sm font-medium text-gray-900">
+                                    {{ equipment.name }}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                {% if equipment.category == 'mobility' %}
+                                    bg-blue-100 text-blue-800
+                                {% elif equipment.category == 'medical' %}
+                                    bg-green-100 text-green-800
+                                {% elif equipment.category == 'assistive' %}
+                                    bg-purple-100 text-purple-800
+                                {% elif equipment.category == 'home_modification' %}
+                                    bg-yellow-100 text-yellow-800
+                                {% else %}
+                                    bg-gray-100 text-gray-800
+                                {% endif %}">
+                                {{ equipment.get_category_display }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            ${{ equipment.cost }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="text-sm text-gray-900">
+                                {{ equipment.get_replacement_frequency_display }}
+                            </span>
+                            {% if equipment.life_expectancy %}
+                            <span class="text-sm text-gray-500">
+                                ({{ equipment.life_expectancy }} years)
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            ${{ equipment.annual_cost|floatformat:2 }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <a href="{% url 'dashboard:equipment_edit' equipment.id %}" class="text-indigo-600 hover:text-indigo-900 mr-3">
+                                {% translate "Edit" %}
+                            </a>
+                            <a href="{% url 'dashboard:equipment_delete' equipment.id %}" class="text-red-600 hover:text-red-900">
+                                {% translate "Delete" %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
+                            {% translate "No equipment found." %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if equipment_list.has_other_pages %}
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+            <div class="flex-1 flex justify-between sm:hidden">
+                {% if equipment_list.has_previous %}
+                <a href="?page={{ equipment_list.previous_page_number }}{% if category %}&category={{ category }}{% endif %}{% if frequency %}&frequency={{ frequency }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}"
+                   class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    {% translate "Previous" %}
+                </a>
+                {% endif %}
+                {% if equipment_list.has_next %}
+                <a href="?page={{ equipment_list.next_page_number }}{% if category %}&category={{ category }}{% endif %}{% if frequency %}&frequency={{ frequency }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}"
+                   class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    {% translate "Next" %}
+                </a>
+                {% endif %}
+            </div>
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm text-gray-700">
+                        {% translate "Showing" %}
+                        <span class="font-medium">{{ equipment_list.start_index }}</span>
+                        {% translate "to" %}
+                        <span class="font-medium">{{ equipment_list.end_index }}</span>
+                        {% translate "of" %}
+                        <span class="font-medium">{{ equipment_list.paginator.count }}</span>
+                        {% translate "results" %}
+                    </p>
+                </div>
+                <div>
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        {% if equipment_list.has_previous %}
+                        <a href="?page={{ equipment_list.previous_page_number }}{% if category %}&category={{ category }}{% endif %}{% if frequency %}&frequency={{ frequency }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}"
+                           class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">{% translate "Previous" %}</span>
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                        {% endif %}
+
+                        {% for i in equipment_list.paginator.page_range %}
+                            {% if equipment_list.number == i %}
+                            <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600">
+                                {{ i }}
+                            </span>
+                            {% else %}
+                            <a href="?page={{ i }}{% if category %}&category={{ category }}{% endif %}{% if frequency %}&frequency={{ frequency }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}"
+                               class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                {{ i }}
+                            </a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if equipment_list.has_next %}
+                        <a href="?page={{ equipment_list.next_page_number }}{% if category %}&category={{ category }}{% endif %}{% if frequency %}&frequency={{ frequency }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}"
+                           class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">{% translate "Next" %}</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        {% endif %}
+                    </nav>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-submit form when filters change
+    const filterForm = document.querySelector('form');
+    const filterInputs = filterForm.querySelectorAll('select');
+    
+    filterInputs.forEach(input => {
+        input.addEventListener('change', () => {
+            filterForm.submit();
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

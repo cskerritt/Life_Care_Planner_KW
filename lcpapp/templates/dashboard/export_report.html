@@ -1,0 +1,117 @@
+{% extends "web/app/app_base.html" %}
+{% load static %}
+{% load i18n %}
+{% load dashboard_filters %}
+
+{% block app %}
+<div class="container mx-auto px-4 py-8">
+    <div class="card max-w-2xl mx-auto mt-8">
+        <div class="card-header">
+            <h1 class="text-2xl font-bold">{% translate "Export Life Care Plan Report" %}</h1>
+            <p class="text-gray-600">{% translate "Generate a detailed report for" %} {{ care_plan.evaluee.full_name }}'s {% translate "Life Care Plan" %}</p>
+        </div>
+        <div class="card-content">
+            <form method="POST" class="space-y-4">
+                {% csrf_token %}
+                <div>
+                    <h3 class="text-lg font-medium mb-4">{% translate "Select sections to include:" %}</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" name="sections" value="patient_info" id="patient_info" class="checkbox" checked>
+                            <label for="patient_info" class="label">{% translate "Patient Information" %}</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" name="sections" value="medical_care" id="medical_care" class="checkbox" checked>
+                            <label for="medical_care" class="label">{% translate "Medical Care" %}</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" name="sections" value="medications" id="medications" class="checkbox" checked>
+                            <label for="medications" class="label">{% translate "Medications" %}</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" name="sections" value="therapies" id="therapies" class="checkbox" checked>
+                            <label for="therapies" class="label">{% translate "Therapies" %}</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" name="sections" value="equipment" id="equipment" class="checkbox" checked>
+                            <label for="equipment" class="label">{% translate "Equipment" %}</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" name="sections" value="home_care" id="home_care" class="checkbox" checked>
+                            <label for="home_care" class="label">{% translate "Home Care" %}</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" name="sections" value="vocational" id="vocational" class="checkbox" checked>
+                            <label for="vocational" class="label">{% translate "Vocational" %}</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" name="sections" value="education" id="education" class="checkbox" checked>
+                            <label for="education" class="label">{% translate "Education" %}</label>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" name="sections" value="cost_projections" id="cost_projections" class="checkbox" checked>
+                            <label for="cost_projections" class="label">{% translate "Cost Projections" %}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end mt-6">
+                    <button type="submit" class="btn btn-primary" id="exportButton">
+                        <i class="fa fa-download mr-2"></i>
+                        {% translate "Export Report" %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const exportButton = document.getElementById('exportButton');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        exportButton.disabled = true;
+        exportButton.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>{% translate "Exporting..." %}';
+
+        const formData = new FormData(form);
+        const sections = formData.getAll('sections');
+
+        fetch('{% url "dashboard:export_care_plan" care_plan.id %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                sections: sections
+            })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Export failed');
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'life_care_plan_report.docx';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('Export failed:', error);
+            alert('{% translate "Failed to export report. Please try again." %}');
+        })
+        .finally(() => {
+            exportButton.disabled = false;
+            exportButton.innerHTML = '<i class="fa fa-download mr-2"></i>{% translate "Export Report" %}';
+        });
+    });
+});
+</script>
+{% endblock %}

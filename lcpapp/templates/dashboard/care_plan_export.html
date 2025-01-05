@@ -1,0 +1,164 @@
+{% extends "web/app/app_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block app %}
+<div class="max-w-2xl mx-auto mt-8">
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h1 class="text-2xl font-bold text-gray-900">{% translate "Export Life Care Plan Report" %}</h1>
+            <p class="mt-1 text-sm text-gray-500">
+                {% translate "Generate a detailed report for" %} {{ care_plan.evaluee.full_name }}'s {% translate "Life Care Plan" %}
+            </p>
+        </div>
+
+        <div class="p-6">
+            <!-- Export Options -->
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900">{% translate "Report Sections" %}</h3>
+                    <div class="mt-4 space-y-4">
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="include_summary" name="include_summary" type="checkbox" checked
+                                       class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3">
+                                <label for="include_summary" class="font-medium text-gray-700">{% translate "Executive Summary" %}</label>
+                                <p class="text-sm text-gray-500">{% translate "Overview of the life care plan including key findings and recommendations" %}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="include_evaluee" name="include_evaluee" type="checkbox" checked
+                                       class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3">
+                                <label for="include_evaluee" class="font-medium text-gray-700">{% translate "Evaluee Information" %}</label>
+                                <p class="text-sm text-gray-500">{% translate "Detailed evaluee profile and medical history" %}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="include_equipment" name="include_equipment" type="checkbox" checked
+                                       class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3">
+                                <label for="include_equipment" class="font-medium text-gray-700">{% translate "Equipment & Supplies" %}</label>
+                                <p class="text-sm text-gray-500">{% translate "List of required equipment with costs and specifications" %}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="include_home_care" name="include_home_care" type="checkbox" checked
+                                       class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3">
+                                <label for="include_home_care" class="font-medium text-gray-700">{% translate "Home Care Services" %}</label>
+                                <p class="text-sm text-gray-500">{% translate "Details of home care services and providers" %}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="include_costs" name="include_costs" type="checkbox" checked
+                                       class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3">
+                                <label for="include_costs" class="font-medium text-gray-700">{% translate "Cost Analysis" %}</label>
+                                <p class="text-sm text-gray-500">{% translate "Detailed breakdown of costs and financial projections" %}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900">{% translate "Export Format" %}</h3>
+                    <div class="mt-4 space-y-4">
+                        <div class="flex items-center">
+                            <input id="format_pdf" name="format" type="radio" checked
+                                   class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+                            <label for="format_pdf" class="ml-3">
+                                <span class="block text-sm font-medium text-gray-700">PDF</span>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center">
+                            <input id="format_excel" name="format" type="radio"
+                                   class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+                            <label for="format_excel" class="ml-3">
+                                <span class="block text-sm font-medium text-gray-700">Excel</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Button -->
+            <div class="mt-8 flex justify-end">
+                <form method="post" action="{% url 'dashboard:export_care_plan' care_plan.id %}" id="exportForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="sections" id="sectionsInput">
+                    <input type="hidden" name="format" id="formatInput">
+                    <button type="submit" class="btn btn-primary" id="exportButton">
+                        <i class="fas fa-file-export mr-2"></i>
+                        <span id="exportButtonText">{% translate "Export Report" %}</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('exportForm');
+    const exportButton = document.getElementById('exportButton');
+    const exportButtonText = document.getElementById('exportButtonText');
+    const sectionsInput = document.getElementById('sectionsInput');
+    const formatInput = document.getElementById('formatInput');
+
+    function updateSectionsInput() {
+        const sections = [];
+        if (document.getElementById('include_summary').checked) sections.push('summary');
+        if (document.getElementById('include_evaluee').checked) sections.push('evaluee');
+        if (document.getElementById('include_equipment').checked) sections.push('equipment');
+        if (document.getElementById('include_home_care').checked) sections.push('home_care');
+        if (document.getElementById('include_costs').checked) sections.push('costs');
+        sectionsInput.value = sections.join(',');
+    }
+
+    function updateFormatInput() {
+        formatInput.value = document.getElementById('format_pdf').checked ? 'pdf' : 'excel';
+    }
+
+    // Update hidden inputs when checkboxes change
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', updateSectionsInput);
+    });
+
+    // Update hidden inputs when format changes
+    document.querySelectorAll('input[name="format"]').forEach(radio => {
+        radio.addEventListener('change', updateFormatInput);
+    });
+
+    // Initial values
+    updateSectionsInput();
+    updateFormatInput();
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        exportButton.disabled = true;
+        exportButtonText.textContent = '{% translate "Generating Report..." %}';
+
+        // Submit the form
+        this.submit();
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

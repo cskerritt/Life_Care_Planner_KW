@@ -1,0 +1,240 @@
+{% extends "web/app/app_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block app %}
+<div class="space-y-6">
+    <div class="flex justify-between items-center">
+        <h1 class="text-3xl font-bold text-gray-900">{% translate "Home Care & Modifications" %}</h1>
+        <div class="flex space-x-3">
+            <a href="{% url 'dashboard:home_care_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus mr-2"></i>
+                {% translate "Add New Home Care Entry" %}
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white shadow rounded-lg p-6">
+        <form method="get" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <label for="service_type" class="block text-sm font-medium text-gray-700">{% translate "Service Type" %}</label>
+                <select name="service_type" id="service_type" class="mt-1 form-select">
+                    <option value="">{% translate "All Services" %}</option>
+                    {% for value, label in service_type_choices %}
+                        <option value="{{ value }}" {% if service_type == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="provider_type" class="block text-sm font-medium text-gray-700">{% translate "Provider Type" %}</label>
+                <select name="provider_type" id="provider_type" class="mt-1 form-select">
+                    <option value="">{% translate "All Providers" %}</option>
+                    {% for value, label in provider_type_choices %}
+                        <option value="{{ value }}" {% if provider_type == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="frequency" class="block text-sm font-medium text-gray-700">{% translate "Frequency" %}</label>
+                <select name="frequency" id="frequency" class="mt-1 form-select">
+                    <option value="">{% translate "All Frequencies" %}</option>
+                    {% for value, label in frequency_choices %}
+                        <option value="{{ value }}" {% if frequency == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="sort" class="block text-sm font-medium text-gray-700">{% translate "Sort By" %}</label>
+                <select name="sort" id="sort" class="mt-1 form-select">
+                    <option value="service_type" {% if sort == 'service_type' %}selected{% endif %}>{% translate "Service Type" %}</option>
+                    <option value="provider_name" {% if sort == 'provider_name' %}selected{% endif %}>{% translate "Provider" %}</option>
+                    <option value="monthly_cost" {% if sort == 'monthly_cost' %}selected{% endif %}>{% translate "Monthly Cost" %}</option>
+                    <option value="-created_at" {% if sort == '-created_at' %}selected{% endif %}>{% translate "Newest First" %}</option>
+                </select>
+            </div>
+
+            <div class="md:col-span-4 flex justify-end">
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fas fa-filter mr-2"></i>
+                    {% translate "Apply Filters" %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Home Care Table -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% translate "Service" %}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% translate "Provider" %}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% translate "Schedule" %}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% translate "Cost" %}
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {% translate "Actions" %}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for service in home_care_list %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">
+                                        {{ service.get_service_type_display }}
+                                    </div>
+                                    {% if service.description %}
+                                    <div class="text-sm text-gray-500">
+                                        {{ service.description|truncatechars:50 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">{{ service.provider_name }}</div>
+                            <div class="text-sm text-gray-500">{{ service.get_provider_type_display }}</div>
+                            {% if service.provider_contact %}
+                            <div class="text-sm text-gray-500">{{ service.provider_contact }}</div>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">
+                                {{ service.get_frequency_display }}
+                            </div>
+                            <div class="text-sm text-gray-500">
+                                {{ service.hours_per_visit }} {% translate "hours per visit" %}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">${{ service.rate_per_hour }}/{% translate "hour" %}</div>
+                            <div class="text-sm text-gray-500">
+                                ${{ service.monthly_cost|floatformat:2 }}/{% translate "month" %}
+                            </div>
+                            <div class="text-sm text-gray-500">
+                                ${{ service.annual_cost|floatformat:2 }}/{% translate "year" %}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <a href="{% url 'dashboard:home_care_edit' service.id %}" class="text-indigo-600 hover:text-indigo-900 mr-3">
+                                {% translate "Edit" %}
+                            </a>
+                            <a href="{% url 'dashboard:home_care_delete' service.id %}" class="text-red-600 hover:text-red-900">
+                                {% translate "Delete" %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
+                            {% translate "No home care services found." %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if home_care_list.has_other_pages %}
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+            <div class="flex-1 flex justify-between sm:hidden">
+                {% if home_care_list.has_previous %}
+                <a href="?page={{ home_care_list.previous_page_number }}{% if service_type %}&service_type={{ service_type }}{% endif %}{% if provider_type %}&provider_type={{ provider_type }}{% endif %}{% if frequency %}&frequency={{ frequency }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}"
+                   class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    {% translate "Previous" %}
+                </a>
+                {% endif %}
+                {% if home_care_list.has_next %}
+                <a href="?page={{ home_care_list.next_page_number }}{% if service_type %}&service_type={{ service_type }}{% endif %}{% if provider_type %}&provider_type={{ provider_type }}{% endif %}{% if frequency %}&frequency={{ frequency }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}"
+                   class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    {% translate "Next" %}
+                </a>
+                {% endif %}
+            </div>
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm text-gray-700">
+                        {% translate "Showing" %}
+                        <span class="font-medium">{{ home_care_list.start_index }}</span>
+                        {% translate "to" %}
+                        <span class="font-medium">{{ home_care_list.end_index }}</span>
+                        {% translate "of" %}
+                        <span class="font-medium">{{ home_care_list.paginator.count }}</span>
+                        {% translate "results" %}
+                    </p>
+                </div>
+                <div>
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        {% if home_care_list.has_previous %}
+                        <a href="?page={{ home_care_list.previous_page_number }}{% if service_type %}&service_type={{ service_type }}{% endif %}{% if provider_type %}&provider_type={{ provider_type }}{% endif %}{% if frequency %}&frequency={{ frequency }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}"
+                           class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">{% translate "Previous" %}</span>
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                        {% endif %}
+
+                        {% for i in home_care_list.paginator.page_range %}
+                            {% if home_care_list.number == i %}
+                            <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600">
+                                {{ i }}
+                            </span>
+                            {% else %}
+                            <a href="?page={{ i }}{% if service_type %}&service_type={{ service_type }}{% endif %}{% if provider_type %}&provider_type={{ provider_type }}{% endif %}{% if frequency %}&frequency={{ frequency }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}"
+                               class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                {{ i }}
+                            </a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if home_care_list.has_next %}
+                        <a href="?page={{ home_care_list.next_page_number }}{% if service_type %}&service_type={{ service_type }}{% endif %}{% if provider_type %}&provider_type={{ provider_type }}{% endif %}{% if frequency %}&frequency={{ frequency }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}"
+                           class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">{% translate "Next" %}</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        {% endif %}
+                    </nav>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-submit form when filters change
+    const filterForm = document.querySelector('form');
+    const filterInputs = filterForm.querySelectorAll('select');
+    
+    filterInputs.forEach(input => {
+        input.addEventListener('change', () => {
+            filterForm.submit();
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

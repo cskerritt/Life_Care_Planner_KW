@@ -1,0 +1,310 @@
+{% extends "web/app/app_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block app %}
+<div class="space-y-6">
+    <div class="flex justify-between items-center">
+        <h1 class="text-3xl font-bold text-gray-900">
+            {% if medication %}
+                {% translate "Edit Medication" %}
+            {% else %}
+                {% translate "Add New Medication" %}
+            {% endif %}
+        </h1>
+        <a href="{% url 'dashboard:care_plan_detail' care_plan.id %}" class="btn btn-outline">
+            <i class="fas fa-arrow-left mr-2"></i>
+            {% translate "Back to Life Care Plan" %}
+        </a>
+    </div>
+
+    <form method="post" class="space-y-8">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="rounded-md bg-red-50 p-4">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-circle text-red-400"></i>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-red-800">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </h3>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Basic Information -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Basic Information" %}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Medication Name" %}*
+                    </label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.generic_name.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Generic Name" %}
+                    </label>
+                    {{ form.generic_name }}
+                    {% if form.generic_name.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.generic_name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.strength.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Strength" %}*
+                    </label>
+                    {{ form.strength }}
+                    {% if form.strength.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.strength.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.dosage.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Dosage" %}*
+                    </label>
+                    {{ form.dosage }}
+                    {% if form.dosage.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.dosage.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Administration -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Administration" %}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="{{ form.frequency.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Frequency" %}*
+                    </label>
+                    {{ form.frequency }}
+                    {% if form.frequency.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.frequency.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.route.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Route" %}*
+                    </label>
+                    {{ form.route }}
+                    {% if form.route.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.route.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.prescribing_doctor.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Prescribing Doctor" %}*
+                    </label>
+                    {{ form.prescribing_doctor }}
+                    {% if form.prescribing_doctor.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.prescribing_doctor.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.pharmacy.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Pharmacy" %}
+                    </label>
+                    {{ form.pharmacy }}
+                    {% if form.pharmacy.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.pharmacy.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Cost and Refills -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Cost and Refills" %}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="{{ form.cost_per_refill.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Cost per Refill" %}*
+                    </label>
+                    {{ form.cost_per_refill }}
+                    {% if form.cost_per_refill.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.cost_per_refill.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.insurance_coverage.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Insurance Coverage (%)" %}
+                    </label>
+                    {{ form.insurance_coverage }}
+                    {% if form.insurance_coverage.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.insurance_coverage.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.refill_quantity.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Refill Quantity" %}*
+                    </label>
+                    {{ form.refill_quantity }}
+                    {% if form.refill_quantity.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.refill_quantity.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.refill_interval.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Days Between Refills" %}*
+                    </label>
+                    {{ form.refill_interval }}
+                    {% if form.refill_interval.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.refill_interval.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.start_date.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Start Date" %}
+                    </label>
+                    {{ form.start_date }}
+                    {% if form.start_date.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.start_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.end_date.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "End Date" %}
+                    </label>
+                    {{ form.end_date }}
+                    {% if form.end_date.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.end_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="cost-summary" class="mt-6 p-4 bg-gray-50 rounded-md">
+                <h3 class="text-sm font-medium text-gray-700 mb-2">{% translate "Cost Summary" %}</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <span class="text-gray-500">{% translate "Monthly Cost:" %}</span>
+                        <span class="text-gray-900 font-medium" id="monthly-cost">$0.00</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500">{% translate "Annual Cost:" %}</span>
+                        <span class="text-gray-900 font-medium" id="annual-cost">$0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h2 class="text-lg font-medium text-gray-900 mb-4">{% translate "Additional Information" %}</h2>
+            <div class="grid grid-cols-1 gap-6">
+                <div>
+                    <label for="{{ form.purpose.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Purpose" %}
+                    </label>
+                    {{ form.purpose }}
+                    {% if form.purpose.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.purpose.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.side_effects.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Side Effects" %}
+                    </label>
+                    {{ form.side_effects }}
+                    {% if form.side_effects.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.side_effects.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.special_instructions.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Special Instructions" %}
+                    </label>
+                    {{ form.special_instructions }}
+                    {% if form.special_instructions.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.special_instructions.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.notes.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        {% translate "Notes" %}
+                    </label>
+                    {{ form.notes }}
+                    {% if form.notes.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.notes.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex justify-end space-x-3">
+            <a href="{% url 'dashboard:care_plan_detail' care_plan.id %}" class="btn btn-outline">
+                {% translate "Cancel" %}
+            </a>
+            <button type="submit" class="btn btn-primary">
+                {% if medication %}
+                    {% translate "Update Medication" %}
+                {% else %}
+                    {% translate "Add Medication" %}
+                {% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const costPerRefillInput = document.getElementById('{{ form.cost_per_refill.id_for_label }}');
+    const insuranceCoverageInput = document.getElementById('{{ form.insurance_coverage.id_for_label }}');
+    const refillIntervalInput = document.getElementById('{{ form.refill_interval.id_for_label }}');
+    
+    const monthlyCostElement = document.getElementById('monthly-cost');
+    const annualCostElement = document.getElementById('annual-cost');
+    
+    function calculateCosts() {
+        const costPerRefill = parseFloat(costPerRefillInput.value) || 0;
+        const insuranceCoverage = parseFloat(insuranceCoverageInput.value) || 0;
+        const refillInterval = parseInt(refillIntervalInput.value) || 30;
+        
+        // Calculate monthly cost
+        const monthlyRefills = 30 / refillInterval;
+        const monthlyCost = (costPerRefill * monthlyRefills) * (1 - insuranceCoverage / 100);
+        const annualCost = monthlyCost * 12;
+        
+        // Update display
+        monthlyCostElement.textContent = `$${monthlyCost.toFixed(2)}`;
+        annualCostElement.textContent = `$${annualCost.toFixed(2)}`;
+    }
+    
+    // Add event listeners
+    costPerRefillInput.addEventListener('input', calculateCosts);
+    insuranceCoverageInput.addEventListener('input', calculateCosts);
+    refillIntervalInput.addEventListener('input', calculateCosts);
+    
+    // Initial calculation
+    calculateCosts();
+});
+</script>
+{% endblock %}
+{% endblock %}
